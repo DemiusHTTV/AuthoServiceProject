@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора | AutoService</title>
+    <link rel="stylesheet" href="src/admin.css">
+</head>
+<body>
+
+    <!-- Шапка панели -->
+    <header class="admin-header">
+        <!-- Кнопка Гамбургер -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Открыть меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="admin-logo">Auto<span>Service</span> <small>Admin</small></div>
+        <div class="admin-profile-top">Администратор: <strong>Елена</strong></div>
+    </header>
+
+    <!-- Боковое меню (Sidebar) -->
+    <aside class="sidebar" id="sidebarMenu">
+        <nav class="sidebar-nav">
+            <a href="#profile" class="nav-item active">👤 Личный кабинет</a>
+            <a href="#schedule" class="nav-item">📅 Расписание клиентов</a>
+            <a href="#analytics" class="nav-item">📈 Аналитика и отчеты</a>
+            <a href="#inventory" class="nav-item">📦 Склад и запчасти</a>
+            <a href="#clients-db" class="nav-item">👥 База клиентов</a>
+            <hr class="nav-divider">
+            <a href="index.html" class="nav-item logout">🚪 Выйти на сайт</a>
+        </nav>
+    </aside>
+
+    <!-- Главный контент (переключается скриптом) -->
+    <main class="admin-content">
+        
+        <!-- СЕКЦИЯ: Личный кабинет -->
+        <section id="profile" class="content-section active">
+            <h2>Личный кабинет администратора</h2>
+            <div class="profile-card">
+                <div class="profile-info">
+                    <p><strong>Сотрудник:</strong> Елена Ковалева</p>
+                    <p><strong>Роль:</strong> Старший администратор</p>
+                    <p><strong>Смена:</strong> Сегодня до 21:00</p>
+                </div>
+                <div class="quick-stats">
+                    <div class="stat-box">
+                        <h3>12</h3>
+                        <p>Записей на сегодня</p>
+                    </div>
+                    <div class="stat-box">
+                        <h3>4</h3>
+                        <p>Машины в боксах</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: Расписание клиентов (Календарь) -->
+        <section id="schedule" class="content-section">
+            <h2>Расписание клиентов (Текущая неделя)</h2>
+            
+            <div class="calendar-week">
+                <!-- Понедельник -->
+                <div class="calendar-day">
+                    <div class="day-header">Пн <span class="date-num">18.05</span></div>
+                    <div class="day-slots">
+                        <div class="client-slot occupied" onclick="openAdminModal('Иван', '+7 (999) 111-22-33', 'Toyota', 'Camry', 'Диагностика подвески', '10:00')">
+                            <span class="slot-time">10:00</span>
+                            <span class="slot-car">Toyota Camry</span>
+                        </div>
+                        <div class="client-slot empty">Свободно</div>
+                        <div class="client-slot occupied" onclick="openAdminModal('Петр', '+7 (999) 555-44-33', 'Nissan', 'X-Trail', 'Техническое обслуживание', '15:30')">
+                            <span class="slot-time">15:30</span>
+                            <span class="slot-car">Nissan X-Trail</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вторник -->
+                <div class="calendar-day">
+                    <div class="day-header">Вт <span class="date-num">19.05</span></div>
+                    <div class="day-slots">
+                        <div class="client-slot empty">Свободно</div>
+                        <div class="client-slot occupied" onclick="openAdminModal('Михаил', '+7 (902) 444-55-66', 'Honda', 'Civic', 'Ремонт двигателя', '12:00')">
+                            <span class="slot-time">12:00</span>
+                            <span class="slot-car">Honda Civic</span>
+                        </div>
+                        <div class="client-slot empty">Свободно</div>
+                    </div>
+                </div>
+
+                <!-- Среда -->
+                <div class="calendar-day today">
+                    <div class="day-header">Ср <span class="date-num">20.05</span> <small>(Сегодня)</small></div>
+                    <div class="day-slots">
+                        <div class="client-slot occupied" onclick="openAdminModal('Елена', '+7 (914) 777-88-99', 'Kia', 'Rio', 'Ремонт тормозов', '09:00')">
+                            <span class="slot-time">09:00</span>
+                            <span class="slot-car">Kia Rio</span>
+                        </div>
+                        <div class="client-slot occupied" onclick="openAdminModal('Алексей', '+7 (950) 123-45-67', 'BMW', 'X5', 'Диагностика подвески', '14:00')">
+                            <span class="slot-time">14:00</span>
+                            <span class="slot-car">BMW X5</span>
+                        </div>
+                        <div class="client-slot empty">Свободно</div>
+                    </div>
+                </div>
+
+                <!-- Четверг -->
+                <div class="calendar-day">
+                    <div class="day-header">Чт <span class="date-num">21.05</span></div>
+                    <div class="day-slots">
+                        <div class="client-slot empty">Свободно</div>
+                        <div class="client-slot empty">Свободно</div>
+                        <div class="client-slot empty">Свободно</div>
+                    </div>
+                </div>
+
+                <!-- Пятница -->
+                <div class="calendar-day">
+                    <div class="day-header">Пт <span class="date-num">22.05</span></div>
+                    <div class="day-slots">
+                        <div class="client-slot occupied" onclick="openAdminModal('Сергей', '+7 (999) 000-11-22', 'Hyundai', 'Solaris', 'Техническое обслуживание', '11:00')">
+                            <span class="slot-time">11:00</span>
+                            <span class="slot-car">Hyundai Solaris</span>
+                        </div>
+                        <div class="client-slot empty">Свободно</div>
+                        <div class="client-slot empty">Свободно</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: Аналитика и отчеты -->
+        <section id="analytics" class="content-section">
+            <h2>Аналитика и финансовые отчеты</h2>
+            <div class="dummy-table-container">
+                <p>Здесь выводятся графики прибыли, среднего чека сервиса и загруженности боксов по мастерам.</p>
+                <div style="background:#eaeaea; height:150px; display:flex; align-items:center; justify-content:center; border-radius:6px; margin-top:20px;">
+                    📊 [Интерактивный график выручки за месяц]
+                </div>
+            </div>
+        </section>
+
+        <!-- СЕКЦИЯ: Склад -->
+        <section id="inventory" class="content-section">
+            <h2>Учет склада и запчастей</h2>
+            <p>Контроль остатков расходников (масла, фильтры, колодки).</p>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Название детали</th>
+                        <th>Артикул</th>
+                        <th>Кол-во</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Масло моторное 5W-30 (1L)</td>
+                        <td>OIL-5W30-CH</td>
+                        <td>24 шт.</td>
+                        <td><span class="badge green">В наличии</span></td>
+                    </tr>
+                    <tr>
+                        <td>Фильтр масляный кузов TOYOTA</td>
+                        <td>FLT-TY-01</td>
+                        <td>2 шт.</td>
+                        <td><span class="badge red">Заканчивается</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- СЕКЦИЯ: База клиентов -->
+        <section id="clients-db" class="content-section">
+            <h2>Общая база клиентов</h2>
+            <p>История всех автовладельцев, когда-либо посещавших автосервис.</p>
+        </section>
+    </main>
+
+    <!-- Модальное окно просмотра деталей клиента -->
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-modal-content">
+            <span class="admin-close-btn" id="closeAdminModalBtn">&times;</span>
+            <h2>📋 Карточка записи клиента</h2>
+            <div class="client-details-list">
+                <p><strong>Время записи:</strong> <span id="detTime"></span></p>
+                <p><strong>Имя клиента:</strong> <span id="detName"></span></p>
+                <p><strong>Телефон:</strong> <span id="detPhone"></span></p>
+                <p><strong>Марка авто:</strong> <span id="detBrand"></span></p>
+                <p><strong>Модель авто:</strong> <span id="detModel"></span></p>
+                <p><strong>Услуга:</strong> <span id="detService"></span></p>
+            </div>
+            <div class="modal-actions">
+                <button class="action-btn accept-btn" onclick="closeAdminModal()">Подтвердить визит</button>
+                <button class="action-btn cancel-btn" onclick="closeAdminModal()">Отменить запись</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Логика работы панели (Гамбургер, Смена разделов, Модалка) -->
+    <script>
+        // Элементы Гамбургера и Слайдбара
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('open');
+            sidebarMenu.classList.toggle('open');
+        });
+
+        // Переключение разделов меню без перезагрузки
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('.content-section');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                
+                // Если это ссылка на главную (выход), не блокируем переход
+                if(!targetId.startsWith('#')) return; 
+                
+                e.preventDefault();
+
+                // Убираем активные классы со всех ссылок и секций
+                navItems.forEach(nav => nav.classList.remove('active'));
+                sections.forEach(sec => sec.classList.remove('active'));
+
+                // Добавляем активный класс текущей ссылке и нужной секции
+                this.classList.add('active');
+                document.querySelector(targetId).classList.add('active');
+
+                // Закрываем меню на мобилках после клика
+                if(window.innerWidth <= 768) {
+                    sidebarMenu.classList.remove('open');
+                    hamburgerBtn.classList.remove('open');
+                }
+            });
+        });
+
+        // Логика Модального окна для просмотра данных записи
+        const adminModal = document.getElementById('adminModal');
+        const closeAdminModalBtn = document.getElementById('closeAdminModalBtn');
+
+        function openAdminModal(name, phone, brand, model, service, time) {
+            document.getElementById('detName').innerText = name;
+            document.getElementById('detPhone').innerText = phone;
+            document.getElementById('detBrand').innerText = brand;
+            document.getElementById('detModel').innerText = model;
+            document.getElementById('detService').innerText = service;
+            document.getElementById('detTime').innerText = time;
+
+            adminModal.style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            adminModal.style.display = 'none';
+        }
+
+        closeAdminModalBtn.addEventListener('click', closeAdminModal);
+        window.addEventListener('click', (e) => {
+            if (e.target === adminModal) closeAdminModal();
+        });
+    </script>
+</body>
+</html>

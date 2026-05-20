@@ -1,66 +1,90 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="src/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <!-- Шапка сайта -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосервис | Качественный ремонт и обслуживание</title>
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
     <header>
         <div class="container">
+            <button class="user-hamburger" id="userHamburgerBtn" aria-label="Меню пользователя">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
             <a href="#" class="logo">Auto<span>Service</span></a>
-            <nav>
+            
+            <nav id="mainNav">
                 <a href="#services">Услуги и цены</a>
                 <a href="#advantages">Преимущества</a>
                 <a href="#about">О нас</a>
                 <a href="#masters">Мастера</a>
                 <a href="#reviews">Отзывы</a>
             </nav>
-            <button class="btn-order pulse-animation" id="openModalBtn">Записаться</button>
+
+            <div class="auth-buttons" id="authBlock">
+                <button class="btn-secondary" id="openLoginBtn">Войти</button>
+                <button class="btn-order btn-pulse" id="openRegisterBtn">Регистрация</button>
+            </div>
+
+            <div class="profile-block" id="profileBlock" style="display: none;">
+                <span class="welcome-text">Привет, <strong id="headerUserName">Автовладелец</strong>!</span>
+                <button class="btn-logout" id="logoutBtn">Выйти</button>
+            </div>
         </div>
     </header>
 
-    <!-- Главный баннер -->
+    <aside class="user-sidebar" id="userSidebar">
+        <div class="sidebar-header">
+            <h3>Личный кабинет</h3>
+        </div>
+        <nav class="user-sidebar-nav">
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('my-records')">📅 Мои записи</a>
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('my-garage')">🚗 Мой гараж</a>
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('bonuses')">💎 Бонусная программа</a>
+        </nav>
+    </aside>
+
     <section class="hero">
         <div class="container">
-            <div class="hero-content fade-in-up">
+            <div class="hero-content anim-fade-up">
                 <h1>Ремонт автомобилей любой сложности</h1>
                 <p>Профессиональное оборудование, опытные мастера и гарантия на все виды работ. Запишитесь на диагностику прямо сейчас!</p>
-                <button class="btn-order" id="heroOrderBtn">Выбрать услугу</button>
+                <button class="btn-order btn-pulse" id="heroOrderBtn">Записаться на сервис</button>
             </div>
         </div>
     </section>
 
-    <!-- Услуги и цены -->
     <section id="services" class="services">
         <div class="container">
-            <h2 class="section-title">Услуги и цены</h2>
+            <h2 class="section-title anim-slide-in">Услуги и цены</h2>
             <div class="services-grid">
-                <div class="service-card">
+                <div class="service-card anim-fade-up">
                     <div class="service-info">
                         <h3>Диагностика подвески</h3>
                         <p>Полный осмотр ходовой части автомобиля на вибростенде с выявлением всех скрытых дефектов.</p>
                         <span class="price-tag">от 500 ₽</span>
                     </div>
                 </div>
-                <div class="service-card">
+                <div class="service-card anim-fade-up">
                     <div class="service-info">
                         <h3>Ремонт двигателя</h3>
                         <p>Капитальный и текущий ремонт ДВС, замена ГРМ, маслосъемных колпачков и регулировка зазоров.</p>
                         <span class="price-tag">от 5 000 ₽</span>
                     </div>
                 </div>
-                <div class="service-card">
+                <div class="service-card anim-fade-up">
                     <div class="service-info">
                         <h3>Техническое обслуживание</h3>
                         <p>Замена моторного масла, воздушного, салонного и топливного фильтров, проверка жидкостей.</p>
                         <span class="price-tag">от 1 200 ₽</span>
                     </div>
                 </div>
-                <div class="service-card">
+                <div class="service-card anim-fade-up">
                     <div class="service-info">
                         <h3>Ремонт тормозной системы</h3>
                         <p>Замена тормозных колодок, дисков, шлангов, обслуживание суппортов и замена жидкости.</p>
@@ -71,27 +95,26 @@
         </div>
     </section>
 
-    <!-- Почему выбирают нас -->
     <section id="advantages" class="advantages">
         <div class="container">
-            <h2 class="section-title">Почему выбирают нас</h2>
+            <h2 class="section-title anim-slide-in">Почему выбирают нас</h2>
             <div class="advantages-grid">
-                <div class="advantage-card">
+                <div class="advantage-card anim-zoom-in">
                     <div class="advantage-icon">🛠️</div>
                     <h3>Современное оборудование</h3>
                     <p>Используем новейшие компьютерные стенды для диагностики и калибровки узлов автомобиля.</p>
                 </div>
-                <div class="advantage-card">
+                <div class="advantage-card anim-zoom-in">
                     <div class="advantage-icon">⏱️</div>
                     <h3>Строгие сроки</h3>
                     <p>Ценим ваше время. Возвращаем машину вовремя, без задержек и непредвиденных ремонтов.</p>
                 </div>
-                <div class="advantage-card">
+                <div class="advantage-card anim-zoom-in">
                     <div class="advantage-icon">🛡️</div>
                     <h3>Честная гарантия</h3>
                     <p>Даем официальную письменную гарантию на все установленные детали и выполненные работы.</p>
                 </div>
-                <div class="advantage-card">
+                <div class="advantage-card anim-zoom-in">
                     <div class="advantage-icon">☕</div>
                     <h3>Комфортная зона отдыха</h3>
                     <p>Проведите время ожидания с комфортом: бесплатный Wi-Fi, чай, кофе и удобные диваны.</p>
@@ -100,29 +123,27 @@
         </div>
     </section>
 
-    <!-- Об автосервисе -->
     <section id="about" class="about">
         <div class="container">
-            <h2 class="section-title">Об автосервисе</h2>
+            <h2 class="section-title anim-slide-in">Об автосервисе</h2>
             <div class="about-wrapper">
-                <div class="about-text">
+                <div class="about-text anim-fade-up">
                     <p>Наш автосервис успешно работает уже более 10 лет. За это время мы успели зарекомендовать себя как надежный партнер для тысяч автовладельцев.</p>
                     <p>Мы используем только сертифицированное оборудование и современные инструменты для диагностики, что позволяет нам безошибочно находить и оперативно устранять неисправности.</p>
                     <p>Главные принципы нашей работы — честность, прозрачное ценообразование и строгое соблюдение оговоренных сроков.</p>
                 </div>
-                <div class="about-img">
+                <div class="about-img anim-zoom-in">
                     <img src="https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?q=80&w=600" alt="Наш бокс">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Информация о мастерах -->
     <section id="masters" class="masters">
         <div class="container">
-            <h2 class="section-title">Наши мастера</h2>
+            <h2 class="section-title anim-slide-in">Наши мастера</h2>
             <div class="masters-grid">
-                <div class="master-card">
+                <div class="master-card anim-fade-up">
                     <div class="master-img-container">
                         <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200" alt="Мастер" class="master-img">
                     </div>
@@ -130,7 +151,7 @@
                     <p class="position">Старший моторист</p>
                     <p class="experience">Опыт: 12 лет</p>
                 </div>
-                <div class="master-card">
+                <div class="master-card anim-fade-up">
                     <div class="master-img-container">
                         <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200" alt="Мастер" class="master-img">
                     </div>
@@ -138,7 +159,7 @@
                     <p class="position">Автоэлектрик-диагност</p>
                     <p class="experience">Опыт: 8 лет</p>
                 </div>
-                <div class="master-card">
+                <div class="master-card anim-fade-up">
                     <div class="master-img-container">
                         <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200" alt="Мастер" class="master-img">
                     </div>
@@ -150,12 +171,11 @@
         </div>
     </section>
 
-    <!-- Отзывы клиентов -->
     <section id="reviews" class="reviews">
         <div class="container">
-            <h2 class="section-title">Отзывы клиентов</h2>
+            <h2 class="section-title anim-slide-in">Отзывы клиентов</h2>
             <div class="reviews-grid">
-                <div class="review-card">
+                <div class="review-card anim-fade-up">
                     <div class="review-header">
                         <div>
                             <h3>Михаил Е.</h3>
@@ -166,7 +186,7 @@
                     <p class="review-text">«Приезжал на замену ГРМ и регулировку клапанов. Сделали всё за один день, запчасти были в наличии. Мастер Александр подробно объяснил состояние старого ремня. Сервисом очень доволен, буду обращаться еще.»</p>
                     <span class="review-date">14 мая 2026</span>
                 </div>
-                <div class="review-card">
+                <div class="review-card anim-fade-up">
                     <div class="review-header">
                         <div>
                             <h3>Артем К.</h3>
@@ -177,7 +197,7 @@
                     <p class="review-text">«Искал толкового электрика, мучался с плавающей ошибкой по датчикам. Дмитрий быстро нашел перебитый провод под капотом, хотя в других местах приговаривали блок управления. Честно, профессионально, недорого.»</p>
                     <span class="review-date">02 мая 2026</span>
                 </div>
-                <div class="review-card">
+                <div class="review-card anim-fade-up">
                     <div class="review-header">
                         <div>
                             <h3>Елена В.</h3>
@@ -192,17 +212,58 @@
         </div>
     </section>
 
-    <!-- Подвал -->
     <footer>
         <div class="container">
             <p>&copy; 2026 AutoService. Все права защищены. г. Иркутск</p>
         </div>
     </footer>
 
-    <!-- Модальное окно записи -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal-content anim-pop-in">
+            <span class="close-btn" id="closeAuthModalBtn">&times;</span>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="tabLoginBtn">Вход</button>
+                <button class="tab-btn" id="tabRegisterBtn">Регистрация</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email / Логин</label>
+                    <input type="text" id="loginEmail" placeholder="example@mail.ru или admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="******" required>
+                </div>
+                <button type="submit" class="submit-btn">Войти</button>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="regName">Ваше Имя *</label>
+                    <input type="text" id="regName" placeholder="Максим" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Телефон *</label>
+                    <input type="tel" id="regPhone" placeholder="+7 (999) 999-99-99" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email *</label>
+                    <input type="email" id="regEmail" placeholder="max@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Придумайте пароль *</label>
+                    <input type="password" id="regPassword" placeholder="Минимум 6 символов" required>
+                </div>
+                <button type="submit" class="submit-btn">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
     <div id="orderModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModalBtn">&times;</span>
+        <div class="modal-content anim-pop-in">
+            <span class="close-btn" id="closeOrderModalBtn">&times;</span>
             <h2>Запись на сервис</h2>
             <form id="orderForm">
                 <div class="form-group">
@@ -225,11 +286,10 @@
                     <label for="serviceType">Выберите услугу *</label>
                     <select id="serviceType" required>
                         <option value="" disabled selected>-- Выберите из списка --</option>
-                        <option value="диагностика">Диагностика подвески</option>
-                        <option value="ремонт-двс">Ремонт двигателя</option>
-                        <option value="то">Техническое обслуживание (ТО)</option>
-                        <option value="тормоза">Ремонт тормозной системы</option>
-                        <option value="другое">Другое / Комплексный ремонт</option>
+                        <option value="Диагностика подвески">Диагностика подвески</option>
+                        <option value="Ремонт двигателя">Ремонт двигателя</option>
+                        <option value="Техническое обслуживание">Техническое обслуживание (ТО)</option>
+                        <option value="Ремонт тормозной системы">Ремонт тормозной системы</option>
                     </select>
                 </div>
                 <button type="submit" class="submit-btn">Отправить заявку</button>
@@ -237,50 +297,220 @@
         </div>
     </div>
 
-    <!-- Логика модального окна -->
+    <div id="cabinetModal" class="modal">
+        <div class="modal-content cabinet-content anim-pop-in">
+            <span class="close-btn" id="closeCabinetModalBtn">&times;</span>
+            <div id="cabinetTargetContent"></div>
+        </div>
+    </div>
+
     <script>
-        const modal = document.getElementById('orderModal');
-        const openModalBtn = document.getElementById('openModalBtn');
+        let currentUser = null;
+        let myAppointments = [
+            { date: '25.05.2026 в 14:00', car: 'Toyota Mark II', service: 'Диагностика подвески', status: 'Ожидает подтверждения' }
+        ];
+
+        const authModal = document.getElementById('authModal');
+        const openLoginBtn = document.getElementById('openLoginBtn');
+        const openRegisterBtn = document.getElementById('openRegisterBtn');
+        const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+        
+        const tabLoginBtn = document.getElementById('tabLoginBtn');
+        const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        const authBlock = document.getElementById('authBlock');
+        const profileBlock = document.getElementById('profileBlock');
+        const headerUserName = document.getElementById('headerUserName');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        const userHamburgerBtn = document.getElementById('userHamburgerBtn');
+        const userSidebar = document.getElementById('userSidebar');
+
+        const orderModal = document.getElementById('orderModal');
         const heroOrderBtn = document.getElementById('heroOrderBtn');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeOrderModalBtn = document.getElementById('closeOrderModalBtn');
         const orderForm = document.getElementById('orderForm');
 
-        function openModal() {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
+        const cabinetModal = document.getElementById('cabinetModal');
+        const cabinetTargetContent = document.getElementById('cabinetTargetContent');
+        const closeCabinetModalBtn = document.getElementById('closeCabinetModalBtn');
+
+        function showModal(modalNode) {
+            modalNode.style.display = 'flex';
+        }
+        function hideModal(modalNode) {
+            modalNode.style.display = 'none';
         }
 
-        function closeModal() {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+        openLoginBtn.addEventListener('click', () => {
+            switchAuthTab('login');
+            showModal(authModal);
+        });
+        openRegisterBtn.addEventListener('click', () => {
+            switchAuthTab('register');
+            showModal(authModal);
+        });
+        closeAuthModalBtn.addEventListener('click', () => hideModal(authModal));
 
-        openModalBtn.addEventListener('click', openModal);
-        heroOrderBtn.addEventListener('click', openModal);
-        closeModalBtn.addEventListener('click', closeModal);
-
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
+        function switchAuthTab(tab) {
+            if (tab === 'login') {
+                tabLoginBtn.classList.add('active');
+                tabRegisterBtn.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            } else {
+                tabRegisterBtn.classList.add('active');
+                tabLoginBtn.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
             }
+        }
+        tabLoginBtn.addEventListener('click', () => switchAuthTab('login'));
+        tabRegisterBtn.addEventListener('click', () => switchAuthTab('register'));
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            currentUser = {
+                name: document.getElementById('regName').value,
+                phone: document.getElementById('regPhone').value,
+                email: document.getElementById('regEmail').value
+            };
+            loginUser();
         });
 
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailVal = document.getElementById('loginEmail').value.trim();
+            const passVal = document.getElementById('loginPassword').value.trim();
+
+            if (emailVal === 'admin' && passVal === '123') {
+                window.location.href = 'http://localhost:5173/admin.html';
+                return;
+            }
+
+            currentUser = {
+                name: 'Максим', 
+                phone: '+7 (902) 555-12-34',
+                email: emailVal
+            };
+            loginUser();
+        });
+
+        function loginUser() {
+            hideModal(authModal);
+            authBlock.style.display = 'none';
+            profileBlock.style.display = 'flex';
+            userHamburgerBtn.style.display = 'flex'; 
+            headerUserName.innerText = currentUser.name;
+            document.getElementById('userName').value = currentUser.name;
+            document.getElementById('userPhone').value = currentUser.phone;
+        }
+
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            authBlock.style.display = 'flex';
+            profileBlock.style.display = 'none';
+            userHamburgerBtn.style.display = 'none'; 
+            userSidebar.classList.remove('open');
+            userHamburgerBtn.classList.remove('open');
+        });
+
+        userHamburgerBtn.addEventListener('click', () => {
+            userHamburgerBtn.classList.toggle('open');
+            userSidebar.classList.toggle('open');
+        });
+
+        heroOrderBtn.addEventListener('click', () => showModal(orderModal));
+        closeOrderModalBtn.addEventListener('click', () => hideModal(orderModal));
+        
         orderForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
-            const formData = {
-                name: document.getElementById('userName').value,
-                phone: document.getElementById('userPhone').value,
-                brand: document.getElementById('carBrand').value,
-                model: document.getElementById('carModel').value,
-                service: document.getElementById('serviceType').value
+            const newRecord = {
+                date: 'В ближайшее время (с вами свяжутся)',
+                car: `${document.getElementById('carBrand').value} ${document.getElementById('carModel').value}`,
+                service: document.getElementById('serviceType').value,
+                status: 'Новая заявка'
             };
-
-            console.log('Данные заявки:', formData);
-            alert(`Спасибо, ${formData.name}! Ваша заявка на автомобиль ${formData.brand} ${formData.model} принята. Мы свяжемся с вами по телефону ${formData.phone}.`);
-            
+            myAppointments.push(newRecord);
+            alert(`Спасибо! Ваша заявка на услугу "${newRecord.service}" успешно отправлена.`);
             orderForm.reset();
-            closeModal();
+            hideModal(orderModal);
+        });
+
+        function openCabinetSection(section) {
+            userSidebar.classList.remove('open');
+            userHamburgerBtn.classList.remove('open');
+            let htmlContent = '';
+
+            if (section === 'my-records') {
+                htmlContent = `<h2>📅 Мои записи на ремонт</h2>`;
+                if(myAppointments.length === 0) {
+                    htmlContent += `<p>У вас пока нет активных записей.</p>`;
+                } else {
+                    myAppointments.forEach(item => {
+                        htmlContent += `
+                            <div class="cabinet-item-card">
+                                <p><strong>Автомобиль:</strong> ${item.car}</p>
+                                <p><strong>Услуга:</strong> ${item.service}</p>
+                                <p><strong>Время:</strong> ${item.date}</p>
+                                <span class="status-badge">${item.status}</span>
+                            </div>
+                        `;
+                    });
+                }
+            } 
+            else if (section === 'my-garage') {
+                htmlContent = `
+                    <h2>🚗 Мой гараж</h2>
+                    <p>Добавьте свои автомобили для быстрого заполнения заявок и просмотра истории ТО.</p>
+                    <div class="cabinet-item-card text-center">
+                        <p style="font-size:1.1rem; margin-bottom:10px;"><strong>Toyota Mark II</strong> (Госномер: А777АА 138)</p>
+                        <p style="color:#777; font-size:0.9rem">Двигатель: 1JZ-GTE | Последний визит: 12.04.2026</p>
+                    </div>
+                    <button class="submit-btn" style="margin-top:15px;" onclick="alert('Функция добавления авто будет доступна в следующей версии!')">+ Добавить автомобиль</button>
+                `;
+            } 
+            else if (section === 'bonuses') {
+                htmlContent = `
+                    <h2>💎 Бонусная программа</h2>
+                    <div class="bonus-card-display">
+                        <p>Ваш баланс: <strong>750 баллов</strong></p>
+                        <small>1 балл = 1 рубль. Вы можете оплатить баллами до 20% стоимости работ.</small>
+                    </div>
+                    <h3>История начислений:</h3>
+                    <p style="font-size:0.9rem; color:#555; margin-top:10px;">+250 баллов за регистрацию в системе</p>
+                    <p style="font-size:0.9rem; color:#555;">+500 баллов за ремонт тормозов (Заказ-наряд №4812)</p>
+                `;
+            }
+            cabinetTargetContent.innerHTML = htmlContent;
+            showModal(cabinetModal);
+        }
+
+        closeCabinetModalBtn.addEventListener('click', () => hideModal(cabinetModal));
+
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) hideModal(authModal);
+            if (e.target === orderModal) hideModal(orderModal);
+            if (e.target === cabinetModal) hideModal(cabinetModal);
+        });
+
+        const observerOptions = {
+            root: null,
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.anim-fade-up, .anim-slide-in, .anim-zoom-in').forEach(el => {
+            observer.observe(el);
         });
     </script>
 </body>
