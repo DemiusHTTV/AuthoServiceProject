@@ -101,3 +101,10 @@ class OrderResponse(OrderBase):
 
     class Config:
         from_attributes = True
+
+class UserCreate(UserBase):
+    password: str = Field(..., min_length=6) # Обязательный пароль
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
