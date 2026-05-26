@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосервис | Качественный ремонт и обслуживание</title>
+    <link rel="stylesheet" href="./style.css">
+
+<script type="module" src="./main.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <button class="user-hamburger" id="userHamburgerBtn" aria-label="Меню пользователя">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <a href="#" class="logo">Auto<span>Service</span></a>
+            
+            <nav id="mainNav">
+                <a href="#services">Услуги и цены</a>
+                <a href="#advantages">Преимущества</a>
+                <a href="#about">О нас</a>
+                <a href="#masters">Мастера</a>
+                <a href="#reviews">Отзывы</a>
+            </nav>
+
+            <div class="auth-buttons" id="authBlock">
+                <button class="btn-order btn-pulse" id="openRegisterBtn">Регистрация</button>
+                <button class="btn-secondary" id="openLoginBtn">Войти</button>
+            </div>
+
+            <div class="profile-block" id="profileBlock" style="display: none;">
+                <span class="welcome-text">Привет, <strong id="headerUserName">Автовладелец</strong>!</span>
+                <button class="btn-logout" id="logoutBtn">Выйти</button>
+            </div>
+        </div>
+    </header>
+
+    <aside class="user-sidebar" id="userSidebar">
+        <div class="sidebar-header">
+            <h3>Личный кабинет</h3>
+        </div>
+        <nav class="user-sidebar-nav">
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('my-records')">📅 Мои записи</a>
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('my-garage')">🚗 Мой гараж</a>
+            <a href="#" class="user-nav-item" onclick="openCabinetSection('bonuses')">💎 Бонусная программа</a>
+        </nav>
+    </aside>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content anim-fade-up">
+                <h1>Ремонт автомобилей любой сложности</h1>
+                <p>Профессиональное оборудование, опытные мастера и гарантия на все виды работ. Запишитесь на диагностику прямо сейчас!</p>
+                <button class="btn-order btn-pulse" id="heroOrderBtn">Записаться в сервис</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title anim-slide-in">Услуги и цены</h2>
+            <div class="services-grid">
+                <div class="service-card anim-fade-up">
+                    <div class="service-info">
+                        <h3>Диагностика подвески</h3>
+                        <p>Полный осмотр ходовой части автомобиля на вибростенде с выявлением всех скрытых дефектов.</p>
+                        <span class="price-tag">от 500 ₽</span>
+                    </div>
+                </div>
+                <div class="service-card anim-fade-up">
+                    <div class="service-info">
+                        <h3>Ремонт двигателя</h3>
+                        <p>Капитальный и текущий ремонт ДВС, замена ГРМ, маслосъемных колпачков и регулировка зазоров.</p>
+                        <span class="price-tag">от 5 000 ₽</span>
+                    </div>
+                </div>
+                <div class="service-card anim-fade-up">
+                    <div class="service-info">
+                        <h3>Техническое обслуживание</h3>
+                        <p>Замена моторного масла, воздушного, салонного и топливного фильтров, проверка жидкостей.</p>
+                        <span class="price-tag">от 1 200 ₽</span>
+                    </div>
+                </div>
+                <div class="service-card anim-fade-up">
+                    <div class="service-info">
+                        <h3>Ремонт тормозной системы</h3>
+                        <p>Замена тормозных колодок, дисков, шлангов, обслуживание суппортов и замена жидкости.</p>
+                        <span class="price-tag">от 800 ₽</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="advantages" class="advantages">
+        <div class="container">
+            <h2 class="section-title anim-slide-in">Почему выбирают нас</h2>
+            <div class="advantages-grid">
+                <div class="advantage-card anim-zoom-in">
+                    <div class="advantage-icon">🛠️</div>
+                    <h3>Современное оборудование</h3>
+                    <p>Используем новейшие компьютерные стенды для диагностики и калибровки узлов автомобиля.</p>
+                </div>
+                <div class="advantage-card anim-zoom-in">
+                    <div class="advantage-icon">⏱️</div>
+                    <h3>Строгие сроки</h3>
+                    <p>Ценим ваше время. Возвращаем машину вовремя, без задержек и непредвиденных ремонтов.</p>
+                </div>
+                <div class="advantage-card anim-zoom-in">
+                    <div class="advantage-icon">🛡️</div>
+                    <h3>Честная гарантия</h3>
+                    <p>Даем официальную письменную гарантию на все установленные детали и выполненные работы.</p>
+                </div>
+                <div class="advantage-card anim-zoom-in">
+                    <div class="advantage-icon">☕</div>
+                    <h3>Комфортная зона отдыха</h3>
+                    <p>Проведите время ожидания с комфортом: бесплатный Wi-Fi, чай, кофе и удобные диваны.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title anim-slide-in">Об автосервисе</h2>
+            <div class="about-wrapper">
+                <div class="about-text anim-fade-up">
+                    <p>Наш автосервис успешно работает уже более 10 лет. За это время мы успели зарекомендовать себя как надежный партнер для тысяч автовладельцев.</p>
+                    <p>Мы используем только сертифицированное оборудование и современные инструменты для диагностики, что позволяет нам безошибочно находить и оперативно устранять неисправности.</p>
+                    <p>Главные принципы нашей работы — честность, прозрачное ценообразование и строгое соблюдение оговоренных сроков.</p>
+                </div>
+                <div class="about-img anim-zoom-in">
+                    <img src="https://i.pinimg.com/736x/f6/65/ed/f665ed83f2ad77245baf300ae342f5e3.jpg" alt="Наш бокс">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="masters" class="masters">
+        <div class="container">
+            <h2 class="section-title anim-slide-in">Наши мастера</h2>
+            <div class="masters-grid">
+                <div class="master-card anim-fade-up">
+                    <div class="master-img-container">
+                        <img src="https://avatars.mds.yandex.net/get-altay/11860411/2a0000018cf233f09021a258978eafe828bc/orig" alt="Мастер" class="master-img">
+                    </div>
+                    <h3>Александр Петров</h3>
+                    <p class="position">Старший моторист</p>
+                    <p class="experience">Опыт: 12 лет</p>
+                </div>
+                <div class="master-card anim-fade-up">
+                    <div class="master-img-container">
+                        <img src="https://media.istockphoto.com/id/2169184131/tr/fotoğraf/worker-of-autoservice-smiling-bearded-man-holding-laptop-in-hands-mechanic-fixing.jpg?s=170667a&w=0&k=20&c=esbUrvclRb6Q6Ic1F3MhAZ8jPnpKNkV9_hRBzrumGls=" alt="Мастер" class="master-img">
+                    </div>
+                    <h3>Дмитрий Иванов</h3>
+                    <p class="position">Автоэлектрик-диагност</p>
+                    <p class="experience">Опыт: 8 лет</p>
+                </div>
+                <div class="master-card anim-fade-up">
+                    <div class="master-img-container">
+                        <img src="https://thumbs.dreamstime.com/b/handsome-muscular-mechanic-tool-sexy-work-75369582.jpg" alt="Мастер" class="master-img">
+                    </div>
+                    <h3>Сергей Федоров</h3>
+                    <p class="position">Специалист по ходовой</p>
+                    <p class="experience">Опыт: 6 лет</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="reviews" class="reviews">
+        <div class="container">
+            <h2 class="section-title anim-slide-in">Отзывы клиентов</h2>
+            <div class="reviews-grid">
+                <div class="review-card anim-fade-up">
+                    <div class="review-header">
+                        <div>
+                            <h3>Михаил Е.</h3>
+                            <span class="review-car">Toyota Camry</span>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Приезжал на замену ГРМ и регулировку клапанов. Сделали всё за один день, запчасти были в наличии. Мастер Александр подробно объяснил состояние старого ремня. Сервисом очень доволен, буду обращаться еще.»</p>
+                    <span class="review-date">14 мая 2026</span>
+                </div>
+                <div class="review-card anim-fade-up">
+                    <div class="review-header">
+                        <div>
+                            <h3>Артем К.</h3>
+                            <span class="review-car">Honda CR-V</span>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Искал толкового электрика, мучался с плавающей ошибкой по датчикам. Дмитрий быстро нашел перебитый провод под капотом, хотя в других местах приговаривали блок управления. Честно, профессионально, недорого.»</p>
+                    <span class="review-date">02 мая 2026</span>
+                </div>
+                <div class="review-card anim-fade-up">
+                    <div class="review-header">
+                        <div>
+                            <h3>Елена В.</h3>
+                            <span class="review-car">Kia Rio</span>
+                        </div>
+                        <div class="review-stars">★★★★★</div>
+                    </div>
+                    <p class="review-text">«Делала здесь регулярное ТО и диагностику ходовой перед дальней поездкой. Очень чистый бокс, уютная клиентская зона, напоили вкусным кофе. Отношение к клиентам на высоте, лишних услуг не навязывали.»</p>
+                    <span class="review-date">21 апреля 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AutoService. Все права защищены. г. Иркутск</p>
+        </div>
+    </footer>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal-content anim-pop-in">
+            <span class="close-btn" id="closeAuthModalBtn">&times;</span>
+            
+            <div class="auth-tabs">
+                <button class="tab-btn active" id="tabLoginBtn">Вход</button>
+                <button class="tab-btn" id="tabRegisterBtn">Регистрация</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email / Логин</label>
+                    <input type="text" id="loginEmail" placeholder="example@mail.ru или admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Пароль</label>
+                    <input type="password" id="loginPassword" placeholder="******" required>
+                </div>
+                <button type="submit" class="submit-btn">Войти</button>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="regName">Ваше Имя *</label>
+                    <input type="text" id="regName" placeholder="Максим" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Телефон *</label>
+                    <input type="tel" id="regPhone" placeholder="+7 (999) 999-99-99" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">Email *</label>
+                    <input type="email" id="regEmail" placeholder="max@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Придумайте пароль *</label>
+                    <input type="password" id="regPassword" placeholder="Минимум 6 символов" required>
+                </div>
+                <button type="submit" class="submit-btn">Зарегистрироваться</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="orderModal" class="modal">
+        <div class="modal-content anim-pop-in">
+            <span class="close-btn" id="closeOrderModalBtn">&times;</span>
+            <h2>Запись на сервис</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="userName">Ваше имя *</label>
+                    <input type="text" id="userName" placeholder="Иван" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPhone">Номер телефона *</label>
+                    <input type="tel" id="userPhone" placeholder="+7 (999) 999-99-99" required>
+                </div>
+                <div class="form-group">
+                    <label for="carBrand">Марка машины *</label>
+                    <input type="text" id="carBrand" placeholder="Toyota" required>
+                </div>
+                <div class="form-group">
+                    <label for="carModel">Модель машины *</label>
+                    <input type="text" id="carModel" placeholder="Camry" required>
+                </div>
+                <div class="form-group">
+                    <label for="serviceType">Выберите услугу *</label>
+                    <select id="serviceType" required>
+                        <option value="" disabled selected>-- Выберите из списка --</option>
+                        <option value="Диагностика подвески">Диагностика подвески</option>
+                        <option value="Ремонт двигателя">Ремонт двигателя</option>
+                        <option value="Техническое обслуживание">Техническое обслуживание (ТО)</option>
+                        <option value="Ремонт тормозной системы">Ремонт тормозной системы</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Отправить заявку</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="cabinetModal" class="modal">
+        <div class="modal-content cabinet-content anim-pop-in">
+            <span class="close-btn" id="closeCabinetModalBtn">&times;</span>
+            <div id="cabinetTargetContent"></div>
+        </div>
+    </div>
+
+
+</body>
+</html>
