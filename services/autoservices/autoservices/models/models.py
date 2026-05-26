@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, DateTime
 from sqlalchemy.orm import relationship
 import datetime
-from autoservices.database.database import Base
 
+from database.database import Base
 # 1. ТАБЛИЦА: Клиенты / Пользователи приложения
 class User(Base):
     __tablename__ = "users"
@@ -11,7 +11,7 @@ class User(Base):
     fullname = Column(String, nullable=False)
     phone = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=True)
-    
+    password = Column(String, nullable=False)
     # Отношение: один ко многим (у пользователя может быть несколько машин)
     cars = relationship("Car", back_populates="owner", cascade="all, delete-orphan")
 
