@@ -15,6 +15,10 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
+    fullname: str
+    phone: str
+    email: str
+    role: str
 
     class Config:
         from_attributes = True  # Позволяет Pydantic читать данные из ORM SQLAlchemy
@@ -93,7 +97,8 @@ class OrderBase(BaseModel):
     status: Optional[str] = "Новый"
 
 class OrderCreate(OrderBase):
-    pass
+        car_id: int
+        employee_id: int
 
 class OrderResponse(OrderBase):
     id: int
@@ -106,5 +111,5 @@ class UserCreate(UserBase):
     password: str = Field(..., min_length=6) # Обязательный пароль
 
 class UserLogin(BaseModel):
-    email: str
-    password: str
+        email: EmailStr
+        password: str

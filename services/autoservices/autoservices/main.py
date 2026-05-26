@@ -57,3 +57,32 @@ def login_user(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
     
     return {"message": "Успешный вход", "user": {"name": user.fullname, "phone": user.phone}}
 
+@app.get("/users/me/{email}")
+def get_user_profile(email: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.post("/orders")
+def create_order(order: schemas.OrderCreate, db: Session = Depends(get_db)):
+    new_order = Order(
+        car_id=order.car_id,
+        employee_id=order.employee_id,
+        status="Новый"
+    )
+    db.add(new_order)
+    db.commit()
+    return {"message": "Order created successfully"}
+@app.get("/users/cabinet/{email}")
+def get_cabinet_data(email: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Собираем данные (включая связанные машины и заказы)
+    return {
+        "fullname": user.fullname,
+        "cars": [{"brand": c.brand, "model": c.model, "vin": c.vin} for c in user.cars],
+        "orders": [{"status": o.status, "created_at": o.created_at} for o in user.orders]
+    }

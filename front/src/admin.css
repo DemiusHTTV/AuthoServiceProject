@@ -1,0 +1,7 @@
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+body { background: #f0f2f5; display: flex; }
+.admin-header { background: #1a1a1a; color: white; padding: 15px; position: fixed; width: 100%; height: 70px; display: flex; align-items: center; }
+.sidebar { background: #24242c; width: 260px; position: fixed; top: 70px; height: 100vh; color: white; }
+.admin-content { margin-top: 70px; margin-left: 260px; padding: 20px; width: 100%; }
+.nav-item { color: #b3b3b3; text-decoration: none; padding: 15px; display: block; }
+.nav-item:hover { background: #ff4d4d; color: white; }
