@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора | Вход</title>
+    <link rel="stylesheet" href="../login.css">
+</head>
+<body class="admin-bg">
+
+    <div class="admin-login-container">
+        <div class="modal-content auth-modal-content anim-pop-in" style="display: block; margin: 0 auto;">
+            
+            <div class="auth-tabs" style="justify-content: center;">
+                <button class="tab-btn active" style="cursor: default; flex: none; width: 100%;">Вход в админ-панель</button>
+            </div>
+
+            <form id="adminLoginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="adminEmail">Логин администратора</label>
+                    <input type="text" id="adminEmail" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Пароль</label>
+                    <input type="password" id="adminPassword" placeholder="******" required>
+                </div>
+                <button type="submit" class="submit-btn btn-pulse">Войти как admin</button>
+            </form>
+            
+        </div>
+    </div>
+
+<script type="module">
+    import { api } from './api.js';
+
+    const adminLoginForm = document.getElementById('adminLoginForm');
+
+    adminLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const loginVal = document.getElementById('adminEmail').value.trim();
+        const passVal = document.getElementById('adminPassword').value.trim();
+
+        try {
+            // Шлём запрос на бэк (например, admin / 123)
+            const result = await api.login({ login: loginVal, password: passVal });
+            
+            // Если бэк подтвердил, что это админ/менеджер
+            if (result.status === 'success' || result.type === 'admin') {
+                localStorage.setItem('adminSession', 'active');
+                // Перенаправляем на полноценную админку
+                window.location.href = './admin.html';
+            } else {
+                alert('Ошибка: этот аккаунт не является администратором!');
+            }
+        } catch (error) {
+            alert('Ошибка входа: ' + error.message);
+        }
+    });
+</script>
+</body>
+</html>

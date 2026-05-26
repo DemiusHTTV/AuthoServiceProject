@@ -1,0 +1,287 @@
+<script type="module">
+    // Импортируем наш клиентский API
+    import { api } from './api.js';
+
+    // Внутреннее состояние фронтенда
+    let currentUser = null;
+    let myAppointments = [];
+
+    // Элементы модалок и форм
+    const authModal = document.getElementById('authModal');
+    const openLoginBtn = document.getElementById('openLoginBtn');
+    const openRegisterBtn = document.getElementById('openRegisterBtn');
+    const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+    
+    const tabLoginBtn = document.getElementById('tabLoginBtn');
+    const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    const authBlock = document.getElementById('authBlock');
+    const profileBlock = document.getElementById('profileBlock');
+    const headerUserName = document.getElementById('headerUserName');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const userHamburgerBtn = document.getElementById('userHamburgerBtn');
+    const userSidebar = document.getElementById('userSidebar');
+
+    const orderModal = document.getElementById('orderModal');
+    const heroOrderBtn = document.getElementById('heroOrderBtn');
+    const closeOrderModalBtn = document.getElementById('closeOrderModalBtn');
+    const orderForm = document.getElementById('orderForm');
+
+    const cabinetModal = document.getElementById('cabinetModal');
+    const cabinetTargetContent = document.getElementById('cabinetTargetContent');
+    const closeCabinetModalBtn = document.getElementById('closeCabinetModalBtn');
+
+    // Хелперы открытия модалок
+    function showModal(modalNode) { modalNode.style.display = 'flex'; }
+    function hideModal(modalNode) { modalNode.style.display = 'none'; }
+
+    openLoginBtn.addEventListener('click', () => { switchAuthTab('login'); showModal(authModal); });
+    openRegisterBtn.addEventListener('click', () => { switchAuthTab('register'); showModal(authModal); });
+    closeAuthModalBtn.addEventListener('click', () => hideModal(authModal));
+
+    function switchAuthTab(tab) {
+        if (tab === 'login') {
+            tabLoginBtn.classList.add('active'); tabRegisterBtn.classList.remove('active');
+            loginForm.classList.add('active'); registerForm.classList.remove('active');
+        } else {
+            tabRegisterBtn.classList.add('active'); tabLoginBtn.classList.remove('active');
+            registerForm.classList.add('active'); loginForm.classList.remove('active');
+        }
+    }
+    tabLoginBtn.addEventListener('click', () => switchAuthTab('login'));
+    tabRegisterBtn.addEventListener('click', () => switchAuthTab('register'));
+
+    // === ПРОВЕРКА СЕССИИ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ ===
+    window.addEventListener('DOMContentLoaded', async () => {
+        const savedClientId = localStorage.getItem('clientId');
+        if (savedClientId) {
+            try {
+                // Запрашиваем данные клиента с бэка по его ID
+                currentUser = await api.getCurrentUser(savedClientId);
+                loginUserVisuals();
+            } catch (err) {
+                localStorage.removeItem('clientId');
+            }
+        }
+    });
+
+    // === ОТПРАВКА ФОРМЫ РЕГИСТРАЦИИ ===
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            login: document.getElementById('regEmail').value.trim(),
+            password: document.getElementById('regPassword').value,
+            full_name: document.getElementById('regName').value.trim(),
+            phone: document.getElementById('regPhone').value.trim()
+        };
+
+        try {
+            await api.register(data);
+            // Сразу после регистрации автоматически логиним его
+            const loginRes = await api.login({ login: data.login, password: data.password });
+            localStorage.setItem('clientId', loginRes.client_id);
+            currentUser = await api.getCurrentUser(loginRes.client_id);
+            loginUserVisuals();
+            hideModal(authModal);
+        } catch (error) {
+            alert('Ошибка регистрации: ' + error.message);
+        }
+    });
+
+    // === ОТПРАВКА ФОРМЫ ВХОДА ===
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const loginVal = document.getElementById('loginEmail').value.trim();
+        const passVal = document.getElementById('loginPassword').value;
+
+        try {
+            const loginRes = await api.login({ login: loginVal, password: passVal });
+            
+            if(loginRes.type === 'client') {
+                localStorage.setItem('clientId', loginRes.client_id);
+                currentUser = await api.getCurrentUser(loginRes.client_id);
+                loginUserVisuals();
+                hideModal(authModal);
+            } else {
+                alert('Этот аккаунт не является клиентским.');
+            }
+        } catch (error) {
+            alert('Ошибка входа: ' + error.message);
+        }
+    });
+
+    // Функция переключения кнопок хедера в режим "Авторизован"
+    function loginUserVisuals() {
+        authBlock.style.display = 'none';
+        profileBlock.style.display = 'flex';
+        userHamburgerBtn.style.display = 'flex'; 
+        headerUserName.innerText = currentUser.full_name.split(' ')[0]; // Только имя берём
+        
+        // Автозаполнение полей формы записи на ремонт
+        document.getElementById('userName').value = currentUser.full_name;
+        document.getElementById('userPhone').value = currentUser.phone;
+    }
+
+    // === ВЫХОД ИЗ СИСТЕМЫ ===
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('clientId');
+        currentUser = null;
+        myAppointments = [];
+        authBlock.style.display = 'flex';
+        profileBlock.style.display = 'none';
+        userHamburgerBtn.style.display = 'none'; 
+        userSidebar.classList.remove('open');
+        userHamburgerBtn.classList.remove('open');
+    });
+
+    userHamburgerBtn.addEventListener('click', () => {
+        userHamburgerBtn.classList.toggle('open');
+        userSidebar.classList.toggle('open');
+    });
+
+    heroOrderBtn.addEventListener('click', () => showModal(orderModal));
+    closeOrderModalBtn.addEventListener('click', () => hideModal(orderModal));
+    
+    // === СОЗДАНИЕ НОВОЙ ЗАЯВКИ (ЗАПИСЬ В СЕРВИС) ===
+    orderForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const clientId = localStorage.getItem('clientId');
+        
+        if (!clientId) {
+            alert('Для записи на ремонт необходимо сначала войти в аккаунт!');
+            showModal(authModal);
+            return;
+        }
+
+        const appointmentData = {
+            client_id: parseInt(clientId),
+            car_brand: document.getElementById('carBrand').value.trim(),
+            car_model: document.getElementById('carModel').value.trim(),
+            service_name: document.getElementById('serviceType').value,
+            appointment_time: "В ближайшее время" // или добавь инпут времени, если нужно
+        };
+
+        try {
+            await api.createAppointment(appointmentData);
+            alert(`Спасибо! Ваша заявка на услугу успешно отправлена.`);
+            orderForm.reset();
+            hideModal(orderModal);
+        } catch (error) {
+            alert('Не удалось отправить заявку: ' + error.message);
+        }
+    });
+
+    // === ДИНАМИЧЕСКИЙ ЛИЧНЫЙ КАБИНЕТ (МЕНЮ-ГАМБУРГЕР) ===
+    window.openCabinetSection = async function(section) {
+        userSidebar.classList.remove('open');
+        userHamburgerBtn.classList.remove('open');
+        let htmlContent = '';
+        const clientId = localStorage.getItem('clientId');
+
+        if (!clientId) return;
+
+        if (section === 'my-records') {
+            htmlContent = `<h2>📅 Мои записи на ремонт</h2>`;
+            try {
+                myAppointments = await api.getClientAppointments(clientId);
+                if(myAppointments.length === 0) {
+                    htmlContent += `<p>У вас пока нет активных записей.</p>`;
+                } else {
+                    myAppointments.forEach(item => {
+                        htmlContent += `
+                            <div class="cabinet-item-card">
+                                <p><strong>Автомобиль:</strong> ${item.car_brand} ${item.car_model}</p>
+                                <p><strong>Услуга:</strong> ${item.service_name}</p>
+                                <span class="status-badge">${item.status}</span>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (err) {
+                htmlContent += `<p style="color:red">Ошибка загрузки записей</p>`;
+            }
+        } 
+        else if (section === 'my-garage') {
+            htmlContent = `<h2>🚗 Мой гараж</h2><p>Ваши автомобили для быстрого оформления ТО.</p>`;
+            try {
+                const cars = await api.getGarage(clientId);
+                if (cars.length === 0) {
+                    htmlContent += `<p>В гараже пока пусто.</p>`;
+                } else {
+                    cars.forEach(car => {
+                        htmlContent += `
+                            <div class="cabinet-item-card">
+                                <p style="font-size:1.1rem; margin-bottom:0;"><strong>${car.brand} ${car.model}</strong></p>
+                            </div>
+                        `;
+                    });
+                }
+                // Формочка быстрого добавления тачки прямо в модалке
+                htmlContent += `
+                    <div style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 15px;">
+                        <h4>Добавить машину:</h4>
+                        <input type="text" id="newCarBrand" placeholder="Марка (напр. BMW)" style="margin: 5px 0; padding: 5px; width:100%;">
+                        <input type="text" id="newCarModel" placeholder="Модель (напр. X5)" style="margin: 5px 0; padding: 5px; width:100%;">
+                        <button class="submit-btn" style="margin-top:5px;" onclick="window.addNewCar()">+ Добавить</button>
+                    </div>
+                `;
+            } catch (err) {
+                htmlContent += `<p style="color:red">Ошибка загрузки гаража</p>`;
+            }
+        } 
+        else if (section === 'bonuses') {
+            htmlContent = `<h2>💎 Бонусная программа</h2>`;
+            try {
+                const bonus = await api.getBonusInfo(clientId);
+                htmlContent += `
+                    <div class="bonus-card-display">
+                        <p>Ваш баланс: <strong>${bonus.balance} баллов</strong></p>
+                        <small>1 балл = 1 рубль. Используйте баллы для скидки.</small>
+                    </div>
+                `;
+            } catch (err) {
+                htmlContent += `<p style="color:red">Ошибка получения бонусов</p>`;
+            }
+        }
+        
+        cabinetTargetContent.innerHTML = htmlContent;
+        showModal(cabinetModal);
+    }
+
+    // Хелпер добавления машины из модалки
+    window.addNewCar = async function() {
+        const clientId = localStorage.getItem('clientId');
+        const brand = document.getElementById('newCarBrand').value.trim();
+        const model = document.getElementById('newCarModel').value.trim();
+        if(!brand || !model) return alert('Заполните марку и модель!');
+        
+        try {
+            await api.addCarToGarage({ client_id: parseInt(clientId), brand, model });
+            alert('Машина добавлена!');
+            window.openCabinetSection('my-garage'); // Обновляем вкладку
+        } catch(err) {
+            alert('Ошибка добавления: ' + err.message);
+        }
+    }
+
+    closeCabinetModalBtn.addEventListener('click', () => hideModal(cabinetModal));
+
+    window.addEventListener('click', (e) => {
+        if (e.target === authModal) hideModal(authModal);
+        if (e.target === orderModal) hideModal(orderModal);
+        if (e.target === cabinetModal) hideModal(cabinetModal);
+    });
+
+    // Логика анимаций при скролле (Твоя оригинальная)
+    const observerOptions = { root: null, threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('animated');
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.anim-fade-up, .anim-slide-in, .anim-zoom-in').forEach(el => observer.observe(el));
+</script>
