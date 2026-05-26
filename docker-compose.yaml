@@ -1,0 +1,11 @@
+services:
+  autoservices:
+    build: 
+      context: ./services/autoservices
+      dockerfile: ./autoservices/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/autoservices:/app
+    environment:
+      - PYTHONUNBUFFERED=1
