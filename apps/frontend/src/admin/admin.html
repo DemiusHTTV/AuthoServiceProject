@@ -202,7 +202,7 @@
     </div>
 
     <!-- Логика работы панели (Гамбургер, Смена разделов, Модалка) -->
-   <script type="module">
+<script type="module">
     import { api } from './api.js';
 
     // Переменная для хранения ID редактируемой записи
@@ -238,11 +238,13 @@
             this.classList.add('active');
             document.querySelector(targetId).classList.add('active');
 
-            // 🔥 Динамически подгружаем данные с бэка при открытии вкладок
+            // Подгружаем данные с бэка при открытии соответствующих вкладок
             if (targetId === '#schedule') {
                 await loadAdminSchedule();
             } else if (targetId === '#clients-db') {
                 await loadAdminClientsDatabase();
+            } else if (targetId === '#inventory') {
+                await loadAdminInventory();
             }
 
             // Закрываем меню на смартфонах после выбора раздела
@@ -259,7 +261,7 @@
             const appointments = await api.getAllAppointments();
             const daySlotsContainers = document.querySelectorAll('.day-slots');
             
-            // Очищаем старый хардкод из всех дней недели (Пн, Вт, Ср...)
+            // Очищаем старый хардкод из всех дней недели
             daySlotsContainers.forEach(container => container.innerHTML = '');
 
             if (appointments.length === 0) {
@@ -270,19 +272,15 @@
             // Проходимся по записям из БД и генерируем слоты
             appointments.forEach(app => {
                 const slot = document.createElement('div');
-                // Если запись подтверждена, можно стилизовать (например, добавить класс confirmed)
                 slot.className = `client-slot occupied ${app.status === 'Подтвержден' ? 'confirmed' : ''}`;
                 slot.innerHTML = `
                     <span class="slot-time">${app.appointment_time || '12:00'}</span>
                     <span class="slot-car">${app.car_brand} ${app.car_model}</span>
                 `;
                 
-                // При клике на карточку открываем твою модалку и передаем туда весь объект записи
                 slot.addEventListener('click', () => openAdminDetailsModal(app));
 
-                // Логика распределения по дням недели. 
-                // Для теста закинем всё в текущий день (Среда, индекс 2), 
-                // в реале ты будешь проверять app.appointment_date
+                // По умолчанию выводим в текущий день (Среда, индекс 2)
                 const targetDayIndex = 2; 
                 if(daySlotsContainers[targetDayIndex]) {
                     daySlotsContainers[targetDayIndex].appendChild(slot);
@@ -341,11 +339,58 @@
         }
     }
 
-    // === 📋 3. РАБОТА С МОДАЛЬНЫМ ОКНОМ (КАРТОЧКА ЗАПИСИ) ===
-    function openAdminDetailsModal(app) {
-        currentSelectedAppointmentId = app.id; // Запоминаем, с каким ID работаем
+    // === 📦 3. ДИНАМИЧЕСКИЙ СКЛАД (ВКЛАДКА #inventory) ===
+    async function loadAdminInventory() {
+        const inventorySection = document.getElementById('inventory');
+        try {
+            const items = await api.getInventory(); 
+            
+            let tableHtml = `
+                <h2>Учет склада и запчастей</h2>
+                <p>Контроль остатков расходников (масла, фильтры, колодки).</p>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Название детали</th>
+                            <th>Артикул</th>
+                            <th>Кол-во</th>
+                            <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
 
-        // Подставляем данные в текстовые спаны твоей модалки
+            if (items.length === 0) {
+                tableHtml += `<tr><td colspan="4" style="text-align:center;">На складе пока нет деталей</td></tr>`;
+            } else {
+                items.forEach(item => {
+                    let badgeColor = 'green';
+                    if (item.status === 'Заканчивается') badgeColor = 'red';
+                    if (item.status === 'Нет на складе') badgeColor = 'grey';
+
+                    tableHtml += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.sku}</td>
+                            <td>${item.quantity} шт.</td>
+                            <td><span class="badge ${badgeColor}">${item.status}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+
+            tableHtml += `</tbody></table>`;
+            inventorySection.innerHTML = tableHtml;
+
+        } catch (error) {
+            inventorySection.innerHTML = `<h2>Учет склада</h2><p style="color:red;">Ошибка загрузки склада: ${error.message}</p>`;
+        }
+    }
+
+    // === 📋 4. РАБОТА С МОДАЛЬНЫМ ОКНОМ (КАРТОЧКА ЗАПИСИ) ===
+    function openAdminDetailsModal(app) {
+        currentSelectedAppointmentId = app.id; 
+
         document.getElementById('detName').innerText = app.client_name || 'Не указано';
         document.getElementById('detPhone').innerText = app.client_phone || 'Не указан';
         document.getElementById('detBrand').innerText = app.car_brand;
@@ -361,14 +406,13 @@
         currentSelectedAppointmentId = null;
     }
 
-    // Функции для кнопок действий (выносим в window, чтобы инлайновые onclick их видели)
     window.confirmVisit = async function() {
         if (!currentSelectedAppointmentId) return;
         try {
-            await api.updateStatus(currentSelectedAppointmentId, 'Подтвержден');
+            await api.updateAppointmentStatus(currentSelectedAppointmentId, 'Подтвержден');
             alert('Статус изменен на "Подтвержден"');
             closeAdminModal();
-            await loadAdminSchedule(); // Обновляем календарь
+            await loadAdminSchedule(); 
         } catch (error) {
             alert('Ошибка изменения статуса: ' + error.message);
         }
@@ -381,18 +425,16 @@
                 await api.deleteAppointment(currentSelectedAppointmentId);
                 alert('Запись успешно удалена');
                 closeAdminModal();
-                await loadAdminSchedule(); // Перерисовываем календарь
+                await loadAdminSchedule(); 
             } catch (error) {
                 alert('Ошибка удаления: ' + error.message);
             }
         }
     }
 
-    // Привязываем наши функции к оригинальным кнопкам в HTML модалки
     document.querySelector('.accept-btn').setAttribute('onclick', 'window.confirmVisit()');
     document.querySelector('.cancel-btn').setAttribute('onclick', 'window.cancelVisit()');
 
-    // Закрытие модалки
     closeAdminModalBtn.addEventListener('click', closeAdminModal);
     window.addEventListener('click', (e) => {
         if (e.target === adminModal) closeAdminModal();

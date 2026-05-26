@@ -1,5 +1,6 @@
 const BASE_URL = 'http://localhost:8000/api'; // Порт твоего FastAPI автосервиса
 
+
 async function sendRequest(endpoint, method = 'GET', body = null) {
     const url = `${BASE_URL}${endpoint}`;
     
@@ -51,7 +52,7 @@ export const api = {
 
     // Получить данные клиента по его ID (вместо токена передаем id параметром)
     getCurrentUser: (clientId) => {
-        return sendRequest(`/auth/me?client_id=${clientId}`, 'GET');
+        return sendRequest(`/users/client/${clientId}`, 'GET');
     },
 
     // Получить список всех клиентов (для таблицы в админке менеджера)
@@ -112,5 +113,15 @@ export const api = {
     // Получить текущий баланс баллов клиента
     getBonusInfo: (clientId) => {
         return sendRequest(`/bonuses?client_id=${clientId}`, 'GET');
+    },
+
+    // ==========================================
+    // 5. УЧЕТ СКЛАДА И ЗАПЧАСТЕЙ (WAREHOUSE)
+    // ==========================================
+    
+    // Получить весь список запчастей со склада
+    getInventory: () => {
+        return sendRequest('/inventory', 'GET');
     }
+    
 };
