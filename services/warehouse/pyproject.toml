@@ -1,10 +1,9 @@
 [tool.poetry]
-name = "autoservices"
+name = "warehouse"
 version = "0.1.0"
-description = "AutoService core backend"
+description = "Warehouse microservice"
 authors = ["Sasha"]
-readme = "README.md"
-packages = [{include = "autoservices"}]
+packages = [{include = "warehouse"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"

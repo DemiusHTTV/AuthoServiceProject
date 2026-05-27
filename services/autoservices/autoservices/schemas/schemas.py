@@ -1,115 +1,90 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
 from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
 
-# ==========================================
-# 1. СХЕМЫ ДЛЯ USER (КЛИЕНТЫ)
-# ==========================================
-class UserBase(BaseModel):
-    fullname: str = Field(..., examples=["Иванов Иван Иванович"])
-    phone: str = Field(..., examples=["+79991112233"])
-    email: Optional[str] = Field(None, examples=["ivan@example.com"])
+class UserCreate(BaseModel):
+    fullname: str
+    phone: str
+    email: str
+    password: str
 
-class UserCreate(UserBase):
-    pass  # То, что прилетает при создании клиента
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
-class UserResponse(UserBase):
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
     fullname: str
     phone: str
     email: str
     role: str
 
-    class Config:
-        from_attributes = True  # Позволяет Pydantic читать данные из ORM SQLAlchemy
-
-
-# ==========================================
-# 2. СХЕМЫ ДЛЯ CAR (АВТОМОБИЛИ)
-# ==========================================
-class CarBase(BaseModel):
-    brand: str = Field(..., examples=["Toyota"])
-    model: str = Field(..., examples=["Camry"])
-    year: int = Field(..., examples=[2021])
-    vin: str = Field(..., examples=["1A2B3C4D5E6F7G8H9"])
-
-class CarCreate(CarBase):
-    user_id: int  # ID владельца обязателен при привязке авто
-
-class CarResponse(CarBase):
-    id: int
+class CarCreate(BaseModel):
+    brand: str
+    model: str
+    year: int = 2020
+    vin: str
     user_id: int
 
-    class Config:
-        from_attributes = True
+class CarResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    brand: str
+    model: str
+    year: int
+    vin: str
+    user_id: int
 
-
-# ==========================================
-# 3. СХЕМЫ ДЛЯ EMPLOYEE (СОТРУДНИКИ)
-# ==========================================
-class EmployeeBase(BaseModel):
+class EmployeeCreate(BaseModel):
     fullname: str
-    position: str  # Механик, Мастер-приемщик и т.д.
+    position: str
     phone: str
+    user_id: Optional[int] = None
 
-class EmployeeCreate(EmployeeBase):
-    pass
-
-class EmployeeResponse(EmployeeBase):
+class EmployeeResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
+    fullname: str
+    position: str
+    phone: str
+    user_id: Optional[int] = None
 
-    class Config:
-        from_attributes = True
-
-
-# ==========================================
-# 4. СХЕМЫ ДЛЯ SERVICE И PART (УСЛУГИ И ДЕТАЛИ)
-# ==========================================
-class ServiceBase(BaseModel):
+class ServiceCreate(BaseModel):
     name: str
     price: float
 
-class ServiceResponse(ServiceBase):
+class ServiceResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
-
-    class Config:
-        from_attributes = True
-
-class PartBase(BaseModel):
     name: str
-    sku: str
     price: float
-    stock: int
 
-class PartResponse(PartBase):
-    id: int
+class PublicOrderCreate(BaseModel):
+    fullname: str
+    phone: str
+    brand: str
+    model: str
+    service_name: str
+    description: Optional[str] = None
 
-    class Config:
-        from_attributes = True
-
-
-# ==========================================
-# 5. СХЕМЫ ДЛЯ ORDERS (ЗАКАЗЫ)
-# ==========================================
-class OrderBase(BaseModel):
+class OrderCreate(BaseModel):
     car_id: int
-    employee_id: int
-    status: Optional[str] = "Новый"
+    employee_id: Optional[int] = None
+    service_name: str
+    description: Optional[str] = None
+    status: str = "Новый"
 
-class OrderCreate(OrderBase):
-        car_id: int
-        employee_id: int
+class OrderStatusUpdate(BaseModel):
+    status: str
+    employee_id: Optional[int] = None
 
-class OrderResponse(OrderBase):
+class OrderResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
     id: int
+    car_id: int
+    employee_id: Optional[int]
+    service_name: str
+    description: Optional[str]
+    status: str
     created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-class UserCreate(UserBase):
-    password: str = Field(..., min_length=6) # Обязательный пароль
-
-class UserLogin(BaseModel):
-        email: EmailStr
-        password: str

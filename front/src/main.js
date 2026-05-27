@@ -1,145 +1,108 @@
-// --- 1. ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
-// Восстанавливаем сессию, если она была (автологин)
-let currentUser = JSON.parse(localStorage.getItem('user')) || null;
+import { AUTO_API, api, getUser, setUser, logout } from './api.js';
+import './style.css';
 
-// --- API SERVICE (Общий помощник) ---
-const API_URL = 'http://127.0.0.1:8000';
-
-async function apiRequest(endpoint, method = 'GET', data = null) {
-    const options = {
-        method,
-        headers: { 'Content-Type': 'application/json' }
-    };
-    if (data) options.body = JSON.stringify(data);
-    
-    const response = await fetch(`${API_URL}${endpoint}`, options);
-    const result = await response.json();
-    
-    if (!response.ok) throw new Error(result.detail || "Request failed");
-    return result;
+const $ = (s) => document.querySelector(s);
+const user = getUser();
+const authBlock = $('#authBlock'),
+    profileBlock = $('#profileBlock'),
+    profileName = $('#profileName');
+if (user) {
+    authBlock.classList.add('hidden');
+    profileBlock.classList.remove('hidden');
+    profileName.textContent = `${user.fullname} (${user.role})`;
 }
+$('#logoutBtn')?.addEventListener('click', logout);
+$('#panelLink')?.addEventListener('click', () => {
+    const u = getUser();
+    if (!u) return openAuth('login');
+    location.href =
+        u.role === 'admin' ? '/admin.html' : u.role === 'worker' ? '/worker.html' : '/#cabinet';
+});
 
-// --- 2. ЭЛЕМЕНТЫ DOM (твои без изменений) ---
-const authModal = document.getElementById('authModal');
-const openLoginBtn = document.getElementById('openLoginBtn');
-const openRegisterBtn = document.getElementById('openRegisterBtn');
-const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
-const tabLoginBtn = document.getElementById('tabLoginBtn');
-const tabRegisterBtn = document.getElementById('tabRegisterBtn');
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-const authBlock = document.getElementById('authBlock');
-const profileBlock = document.getElementById('profileBlock');
-const headerUserName = document.getElementById('headerUserName');
-const logoutBtn = document.getElementById('logoutBtn');
-const userHamburgerBtn = document.getElementById('userHamburgerBtn');
-const userSidebar = document.getElementById('userSidebar');
-const orderModal = document.getElementById('orderModal');
-const heroOrderBtn = document.getElementById('heroOrderBtn');
-const closeOrderModalBtn = document.getElementById('closeOrderModalBtn');
-const orderForm = document.getElementById('orderForm');
-const cabinetModal = document.getElementById('cabinetModal');
-const closeCabinetModalBtn = document.getElementById('closeCabinetModalBtn');
-
-// --- 3. ФУНКЦИИ УПРАВЛЕНИЯ UI ---
-function showModal(modalNode) { modalNode.style.display = 'flex'; }
-function hideModal(modalNode) { modalNode.style.display = 'none'; }
-
-function switchAuthTab(tab) {
-    const isLogin = tab === 'login';
-    tabLoginBtn.classList.toggle('active', isLogin);
-    tabRegisterBtn.classList.toggle('active', !isLogin);
-    loginForm.classList.toggle('active', isLogin);
-    registerForm.classList.toggle('active', !isLogin);
+function openAuth(tab = 'login') {
+    $('#authModal').classList.add('active');
+    switchTab(tab);
 }
-
-function loginUser(userData) {
-    currentUser = userData;
-    localStorage.setItem('user', JSON.stringify(currentUser));
-    hideModal(authModal);
-    authBlock.style.display = 'none';
-    profileBlock.style.display = 'flex';
-    userHamburgerBtn.style.display = 'flex';
-    headerUserName.innerText = currentUser.fullname;
+function closeAuth() {
+    $('#authModal').classList.remove('active');
 }
+function switchTab(tab) {
+    $('#loginForm').classList.toggle('hidden', tab !== 'login');
+    $('#registerForm').classList.toggle('hidden', tab !== 'register');
+    $('#tabLogin').classList.toggle('active', tab === 'login');
+    $('#tabReg').classList.toggle('active', tab === 'register');
+}
+$('#openLogin').onclick = () => openAuth('login');
+$('#openRegister').onclick = () => openAuth('register');
+$('#closeAuth').onclick = closeAuth;
+$('#tabLogin').onclick = () => switchTab('login');
+$('#tabReg').onclick = () => switchTab('register');
 
-// --- 4. ЛОГИКА API ---
-registerForm.addEventListener('submit', async (e) => {
+$('#registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const f = e.target;
     try {
-        await apiRequest('/register', 'POST', {
-            fullname: document.getElementById('regName').value,
-            phone: document.getElementById('regPhone').value,
-            email: document.getElementById('regEmail').value,
-            password: document.getElementById('regPassword').value
+        await api(AUTO_API, '/register', 'POST', {
+            fullname: f.fullname.value,
+            phone: f.phone.value,
+            email: f.email.value,
+            password: f.password.value,
         });
-        alert("Регистрация успешна!");
-        switchAuthTab('login');
-        registerForm.reset();
-    } catch (err) { alert("Ошибка: " + err.message); }
-});
-
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-        const data = await apiRequest('/login', 'POST', {
-            email: document.getElementById('loginEmail').value,
-            password: document.getElementById('loginPassword').value
-        });
-        loginUser(data.user);
-    } catch (err) { alert("Ошибка входа: " + err.message); }
-});
-
-// --- 5. ОБРАБОТЧИКИ СОБЫТИЙ ---
-openLoginBtn.addEventListener('click', () => { switchAuthTab('login'); showModal(authModal); });
-openRegisterBtn.addEventListener('click', () => { switchAuthTab('register'); showModal(authModal); });
-closeAuthModalBtn.addEventListener('click', () => hideModal(authModal));
-tabLoginBtn.addEventListener('click', () => switchAuthTab('login'));
-tabRegisterBtn.addEventListener('click', () => switchAuthTab('register'));
-
-logoutBtn.addEventListener('click', () => {
-    currentUser = null;
-    localStorage.removeItem('user');
-    location.reload();
-});
-
-// Инициализация интерфейса при загрузке страницы
-if (currentUser) loginUser(currentUser);
-
-// Остальные обработчики (hamburger, modal и т.д.)
-userHamburgerBtn.addEventListener('click', () => {
-    userHamburgerBtn.classList.toggle('open');
-    userSidebar.classList.toggle('open');
-});
-async function loadCabinetData() {
-    if (!currentUser) return;
-
-    try {
-        const data = await apiRequest(`/users/cabinet/${currentUser.email}`);
-        
-        // Очищаем и наполняем контент кабинета
-        cabinetTargetContent.innerHTML = `
-            <h3>Привет, ${data.fullname}!</h3>
-            <h4>Твои авто:</h4>
-            <ul>${data.cars.map(c => `<li>${c.brand} ${c.model} (VIN: ${c.vin})</li>`).join('')}</ul>
-            <h4>Твои заказы:</h4>
-            <ul>${data.orders.map(o => `<li>Статус: ${o.status}</li>`).join('')}</ul>
-        `;
+        alert('Регистрация успешна, теперь войдите');
+        switchTab('login');
+        f.reset();
     } catch (err) {
-        cabinetTargetContent.innerHTML = `<p>Ошибка загрузки данных: ${err.message}</p>`;
+        alert(err.message);
+    }
+});
+$('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    try {
+        const data = await api(AUTO_API, '/login', 'POST', {
+            email: f.email.value,
+            password: f.password.value,
+        });
+        setUser(data.user);
+        if (data.user.role === 'admin') location.href = '/admin.html';
+        else if (data.user.role === 'worker') location.href = '/worker.html';
+        else location.reload();
+    } catch (err) {
+        alert(err.message);
+    }
+});
+
+$('#openOrder').onclick = () => $('#orderModal').classList.add('active');
+$('#closeOrder').onclick = () => $('#orderModal').classList.remove('active');
+$('#orderForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    try {
+        await api(AUTO_API, '/orders/public', 'POST', {
+            fullname: f.fullname.value,
+            phone: f.phone.value,
+            brand: f.brand.value,
+            model: f.model.value,
+            service_name: f.service_name.value,
+            description: f.description.value,
+        });
+        alert('Заявка создана! Администратор увидит её в панели.');
+        f.reset();
+        $('#orderModal').classList.remove('active');
+    } catch (err) {
+        alert(err.message);
+    }
+});
+
+async function loadCabinet() {
+    const u = getUser();
+    if (!u || u.role !== 'client') return;
+    try {
+        const data = await api(AUTO_API, `/users/cabinet/${u.email}`);
+        $('#cabinetContent').innerHTML =
+            `<h3>Личный кабинет</h3><p><b>${data.fullname}</b></p><h4>Мои авто</h4>${data.cars.length ? data.cars.map((c) => `<div class="card">${c.brand} ${c.model}, VIN: ${c.vin}</div>`).join('') : '<p class="muted">Пока нет авто</p>'}<h4>Мои заявки</h4>${data.orders.length ? data.orders.map((o) => `<div class="card">#${o.id} ${o.car}: ${o.service_name}<br><span class="badge">${o.status}</span></div>`).join('') : '<p class="muted">Пока нет заявок</p>'}`;
+    } catch (e) {
+        $('#cabinetContent').innerHTML = '<p>Не удалось загрузить кабинет</p>';
     }
 }
-
-heroOrderBtn.addEventListener('click', () => showModal(orderModal));
-closeOrderModalBtn.addEventListener('click', () => hideModal(orderModal));
-closeCabinetModalBtn.addEventListener('click', () => hideModal(cabinetModal));
-
-window.openCabinetSection = function(section) {
-    userSidebar.classList.remove('open');
-    userHamburgerBtn.classList.remove('open');
-    
-    // Вызываем загрузку данных
-    loadCabinetData();
-    
-    showModal(cabinetModal);
-};
+loadCabinet();

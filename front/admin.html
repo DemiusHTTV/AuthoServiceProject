@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Админ-панель</title>
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="container">
+                <a class="logo" href="/">Auto<span>Service</span></a>
+                <nav class="nav">
+                    <span>Админ: <b id="adminName"></b></span
+                    ><a href="/worker.html">Панель работника</a
+                    ><button class="btn btn-danger" id="logoutBtn">Выйти</button>
+                </nav>
+            </div>
+        </header>
+        <main class="panel container">
+            <h1>Админ-панель</h1>
+            <div class="card">
+                <label>Назначить мастера при обновлении заказа</label
+                ><select id="employeeSelect"></select>
+            </div>
+            <h2>Заявки</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Клиент</th>
+                        <th>Авто</th>
+                        <th>Услуга</th>
+                        <th>Статус</th>
+                        <th>Мастер</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="ordersBody"></tbody>
+            </table>
+            <h2>Склад</h2>
+            <form id="partForm" class="form card">
+                <input name="name" placeholder="Название запчасти" required /><input
+                    name="sku"
+                    placeholder="Артикул"
+                    required
+                /><input name="price" type="number" placeholder="Цена" required /><input
+                    name="stock"
+                    type="number"
+                    placeholder="Остаток"
+                    required
+                /><button class="btn btn-primary">Добавить запчасть</button>
+            </form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>SKU</th>
+                        <th>Цена</th>
+                        <th>Остаток</th>
+                    </tr>
+                </thead>
+                <tbody id="partsBody"></tbody>
+            </table>
+        </main>
+        <script type="module" src="/src/admin.js"></script>
+    </body>
+</html>

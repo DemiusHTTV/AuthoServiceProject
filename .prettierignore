@@ -1,0 +1,10 @@
+node_modules
+front/node_modules
+dist
+front/dist
+build
+coverage
+*.db
+__pycache__
+.venv
+.env

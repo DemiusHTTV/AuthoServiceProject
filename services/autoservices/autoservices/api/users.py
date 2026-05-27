@@ -1,35 +1,54 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
 from autoservices.database.database import get_db
-import autoservices.models.models as models
-import autoservices.schemas.schemas as schemas
+from autoservices.models import models
+from autoservices.schemas import schemas
 
-router = APIRouter(prefix="/users", tags=["Клиенты"])
+router = APIRouter(tags=["auth/users"])
 
-@router.post("/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    # Проверяем, нет ли уже пользователя с таким телефоном
-    db_user = db.query(models.User).filter(models.User.phone == user.phone).first()
-    if db_user:
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Пользователь с номером {user.phone} уже зарегистрирован"
-        )
-    
-    new_user = models.User(fullname=user.fullname, phone=user.phone, email=user.email)
+@router.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    if db.query(models.User).filter(models.User.email == user.email).first():
+        raise HTTPException(status_code=400, detail="Email уже зарегистрирован")
+    if db.query(models.User).filter(models.User.phone == user.phone).first():
+        raise HTTPException(status_code=400, detail="Телефон уже зарегистрирован")
+    new_user = models.User(**user.model_dump(), role="client")
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
 
-@router.get("/", response_model=List[schemas.UserResponse])
-def get_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return db.query(models.User).offset(skip).limit(limit).all()
+@router.post("/login")
+def login_user(user_data: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == user_data.email).first()
+    if not user or user.password != user_data.password:
+        raise HTTPException(status_code=401, detail="Неверный email или пароль")
+    return {"message": "Успешный вход", "user": schemas.UserResponse.model_validate(user)}
 
-@router.get("/{user_id}", response_model=schemas.UserResponse)
-def get_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="Клиент не найден")
-    return db_user
+@router.get("/users", response_model=list[schemas.UserResponse])
+def get_users(db: Session = Depends(get_db)):
+    return db.query(models.User).order_by(models.User.id.desc()).all()
+
+@router.get("/users/cabinet/{email}")
+def get_cabinet_data(email: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    orders = []
+    for car in user.cars:
+        for order in car.orders:
+            orders.append({
+                "id": order.id,
+                "car": f"{car.brand} {car.model}",
+                "service_name": order.service_name,
+                "status": order.status,
+                "created_at": order.created_at,
+            })
+    return {
+        "id": user.id,
+        "fullname": user.fullname,
+        "email": user.email,
+        "role": user.role,
+        "cars": [{"id": c.id, "brand": c.brand, "model": c.model, "year": c.year, "vin": c.vin} for c in user.cars],
+        "orders": orders,
+    }

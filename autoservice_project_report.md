@@ -1,24 +1,3 @@
-# AutoService Project
-
-Мини-проект автосервиса: основной сервис заявок/пользователей + отдельный микросервис склада + vanilla JS frontend.
-
-## Запуск
-
-```bash
-docker compose up --build
-```
-
-Открыть:
-
-- Frontend: http://localhost:5173
-- AutoService API: http://localhost:8000/docs
-- Warehouse API: http://localhost:8001/docs
-
-## Тестовые аккаунты
-
-- Админ: `admin@autoservice.local` / `admin123`
-- Работник: `worker@autoservice.local` / `worker123`
-- Клиента можно зарегистрировать через сайт.
 # Отчет по проекту
 # Информационная система автосервиса и склада запчастей
 

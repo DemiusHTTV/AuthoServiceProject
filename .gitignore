@@ -1,9 +1,7 @@
-.venv/
 __pycache__/
 *.pyc
-.poetry/
-autoservice.db
-warehouse.db
+*.db
+.env
 node_modules/
 dist/
 .DS_Store

@@ -1,11 +1,40 @@
 services:
-  autoservices:
-    build: 
-      context: ./services/autoservices
-      dockerfile: ./autoservices/Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./services/autoservices:/app
-    environment:
-      - PYTHONUNBUFFERED=1
+    autoservices:
+        build:
+            context: ./services/autoservices
+            dockerfile: Dockerfile
+        container_name: autoservices_api
+        ports:
+            - '8000:8000'
+        volumes:
+            - autoservices_data:/app/data
+        environment:
+            - PYTHONUNBUFFERED=1
+            - WAREHOUSE_URL=http://warehouse:8001
+
+    warehouse:
+        build:
+            context: ./services/warehouse
+            dockerfile: Dockerfile
+        container_name: warehouse_api
+        ports:
+            - '8001:8001'
+        volumes:
+            - warehouse_data:/app/data
+        environment:
+            - PYTHONUNBUFFERED=1
+
+    front:
+        build:
+            context: ./front
+            dockerfile: Dockerfile
+        container_name: autoservice_front
+        ports:
+            - '5173:5173'
+        depends_on:
+            - autoservices
+            - warehouse
+
+volumes:
+    autoservices_data:
+    warehouse_data:
