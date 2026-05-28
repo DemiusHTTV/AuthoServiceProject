@@ -1,0 +1,91 @@
+%% ER-диаграмма (схема данных) AutoService
+
+erDiagram
+    clients ||--o{ requests : "подаёт"
+    clients ||--o{ bonuses : "получает"
+    requests ||--o{ request_assignments : "назначения"
+    workers ||--o{ request_assignments : "выполняет"
+    workers }o--|| specializations : "имеет"
+    requests }o--|| services : "тип услуги"
+    requests ||--o{ parts_usage : "использует"
+    warehouse_parts ||--o{ parts_usage : "деталь"
+
+    clients {
+        int id PK
+        text name
+        text email UK
+        text phone
+        text password
+        real bonus_balance
+        timestamp created_at
+    }
+
+    requests {
+        int id PK
+        int client_id FK
+        text client_name
+        text client_email
+        text client_phone
+        text car_brand
+        text car_model
+        int car_year
+        text description
+        int service_id FK
+        text status
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    workers {
+        int id PK
+        text name
+        text phone
+        int specialization_id FK
+        text login UK
+        text password
+    }
+
+    specializations {
+        int id PK
+        text name
+    }
+
+    services {
+        int id PK
+        text name
+        real base_price
+        text description
+    }
+
+    request_assignments {
+        int id PK
+        int request_id FK
+        int worker_id FK
+        text status
+        timestamp assigned_at
+        timestamp completed_at
+    }
+
+    bonuses {
+        int id PK
+        int client_id FK
+        real amount
+        text reason
+        timestamp created_at
+    }
+
+    warehouse_parts {
+        int id PK
+        text name
+        text article UK
+        real price
+        int quantity
+        text category
+    }
+
+    parts_usage {
+        int id PK
+        int request_id FK
+        int part_id FK
+        int quantity_used
+    }

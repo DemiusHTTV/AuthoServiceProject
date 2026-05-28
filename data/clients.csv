@@ -1,0 +1,16 @@
+id,name,email,phone,password_hash,bonus_balance
+1,Иванов Алексей,ivanov@mail.ru,+79001234567,client123,3000
+2,Петрова Мария,petrova@mail.ru,+79007654321,client123,3000
+3,Сидоров Дмитрий,sidorov@mail.ru,+79001112233,client123,3000
+4,Козлова Анна,kozlova@mail.ru,+79009998877,client123,3000
+5,Новиков Сергей,novikov@mail.ru,+79005556644,client123,3000
+6,Федорова Елена,fedorova@mail.ru,+79003332211,client123,3000
+7,Морозов Павел,morozov@mail.ru,+79004445566,client123,3000
+8,Волкова Ольга,volkova@mail.ru,+79006667788,client123,3000
+9,Соколов Артём,sokolov@mail.ru,+79002223344,client123,3000
+10,Лебедева Наталья,lebedeva@mail.ru,+79008889900,client123,3000
+11,Кузнецов Иван,kuznecov@mail.ru,+79001010101,client123,3000
+12,Попова Светлана,popova@mail.ru,+79002020202,client123,3000
+13,Васильев Максим,vasiliev@mail.ru,+79003030303,client123,3000
+14,Зайцева Татьяна,zayceva@mail.ru,+79004040404,client123,3000
+15,Михайлов Андрей,mihaylov@mail.ru,+79005050505,client123,3000
