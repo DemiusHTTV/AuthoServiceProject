@@ -1,4 +1,4 @@
-from wharehouse.app.main import app as warehouse_app
+from wherehouse.app.main import app as warehouse_app
 from fastapi.testclient import TestClient
 
 def test_warehouse_health_endpoint():
