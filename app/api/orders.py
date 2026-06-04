@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
-from autoservices.database.database import get_db
-from autoservices.models import models
-from autoservices.schemas import schemas
+from app.database.database import get_db
+from app.models import models
+from app.schemas import schemas
 
 import httpx
 from typing import List
