@@ -1,3 +1,4 @@
+
 from typing import List
 from .models import OrderItem, Part
 
@@ -9,10 +10,8 @@ def calculate_total_price(items: List[OrderItem], parts_db: List[Part]) -> float
             
         part = next((p for p in parts_db if p.id == item.part_id), None)
         if not part:
-            raise ValueError(f"Part with ID {item.part_id} not found")
-            
-        if part.count < item.qty:
-            raise ValueError(f"Not enough parts in stock for ID {item.part_id}")
-            
-        total += part.price * item.qty
+            raise ValueError(f"Part with id {item.part_id} not found in warehouse")
+        if item.qty > part.count:
+            raise ValueError(f"Not enough parts in warehouse for {part.name}")
+        total += item.qty * part.price
     return total

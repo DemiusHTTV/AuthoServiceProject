@@ -30,3 +30,4 @@ backend/autoservice.sqlite3
 *.njsproj
 *.sln
 *.sw?
+\.pytest_cache
