@@ -9,3 +9,8 @@ dependencies = [
     "httpx>=0.28.1",
     "uvicorn>=0.49.0",
 ]
+
+[tool.uv.workspace]
+members = [
+    "lib/autoservice_core",
+]

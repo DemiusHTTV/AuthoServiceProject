@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoService — Админ-панель</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div style="display:flex;align-items:center;gap:10px">
+                <button class="hamburger" id="hamburger">
+                    <span></span><span></span><span></span>
+                </button>
+                <a class="logo" href="/">Auto<span>Service</span> <small style="font-size:0.7rem;background:#333;padding:2px 6px;border-radius:4px;color:#ccc;font-weight:normal;margin-left:5px">ADMIN</small></a>
+            </div>
+            <div style="color:#fff" id="adminProfile">
+                <button class="btn btn-danger" id="adminLogout">Выйти</button>
+            </div>
+        </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <a class="nav-item active" href="#" data-section="requests">📋 Заявки</a>
+            <a class="nav-item" href="#" data-section="workers">👷 Работники</a>
+            <a class="nav-item" href="#" data-section="warehouse">🏭 Склад</a>
+            <a class="nav-item" href="#" data-section="stats">📊 Статистика</a>
+            <hr class="nav-divider">
+            <a class="nav-item" href="/">← На сайт</a>
+        </nav>
+    </aside>
+
+    <main class="admin-content panel container" id="mainContent">
+        <!-- Секция: Заявки -->
+        <div class="content-section active" id="sec-requests">
+            <h1>Заявки клиентов</h1>
+            <div style="margin-bottom:15px">
+                <button class="btn btn-primary" data-filter="all">Все</button>
+                <button class="btn btn-light" data-filter="new">Новые</button>
+                <button class="btn btn-light" data-filter="accepted">Принятые</button>
+                <button class="btn btn-light" data-filter="in_progress">В работе</button>
+                <button class="btn btn-light" data-filter="completed">Завершённые</button>
+            </div>
+            <table class="table" id="requestsTable">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Клиент</th><th>Авто</th><th>Услуга</th><th>Статус</th><th>Дата</th><th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Секция: Работники -->
+        <div class="content-section" id="sec-workers">
+            <h1>Работники</h1>
+            <table class="table" id="workersTable">
+                <thead>
+                    <tr><th>#</th><th>Имя</th><th>Специализация</th><th>Телефон</th><th>Логин</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Секция: Склад -->
+        <div class="content-section" id="sec-warehouse">
+            <h1>Склад запчастей</h1>
+            <div style="margin-bottom:15px">
+                <input type="text" id="warehouseSearch" placeholder="Поиск деталей..." style="padding:10px;border:1px solid #ccc;border-radius:4px;width:300px">
+            </div>
+            <table class="table" id="warehouseTable">
+                <thead>
+                    <tr><th>#</th><th>Название</th><th>Артикул</th><th>Цена ₽</th><th>Количество</th><th>Категория</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <!-- Секция: Статистика -->
+        <div class="content-section" id="sec-stats">
+            <h1>Статистика</h1>
+            <div class="quick-stats" id="statsCards" style="flex-wrap:wrap"></div>
+        </div>
+    </main>
+
+    <!-- Модалка деталей заявки -->
+    <div class="modal" id="requestDetailModal">
+        <div class="modal-box" style="max-width:550px">
+            <div class="modal-head">
+                <h2>Детали заявки</h2>
+                <span class="close" id="closeRequestDetail">&times;</span>
+            </div>
+            <div id="requestDetailContent"></div>
+            <div id="requestActions" style="margin-top:15px"></div>
+        </div>
+    </div>
+
+    <!-- Модалка назначения работника -->
+    <div class="modal" id="assignModal">
+        <div class="modal-box" style="max-width:400px">
+            <div class="modal-head">
+                <h2>Назначить работника</h2>
+                <span class="close" id="closeAssign">&times;</span>
+            </div>
+            <form class="form" id="assignForm">
+                <input type="hidden" id="assignRequestId">
+                <select id="assignWorkerSelect" required>
+                    <option value="">Выберите работника</option>
+                </select>
+                <button class="btn btn-primary">Назначить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Логин-модалка (если не авторизован) -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-box" style="max-width:400px">
+            <div class="modal-head">
+                <h2>Вход в панель управления</h2>
+            </div>
+            <form class="form" id="adminLoginForm">
+                <input name="login" placeholder="Логин" value="admin" required>
+                <input name="password" type="password" placeholder="Пароль" required>
+                <button class="btn btn-primary">Войти</button>
+                <p class="muted">admin / admin123</p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/admin.js"></script>
+</body>
+</html>

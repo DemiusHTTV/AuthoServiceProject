@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoService — Панель работника</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="container">
+            <div style="display:flex;align-items:center;gap:10px">
+                <a class="logo" href="/">Auto<span>Service</span> <small style="font-size:0.7rem;background:#333;padding:2px 6px;border-radius:4px;color:#ccc;font-weight:normal;margin-left:5px">МАСТЕР</small></a>
+            </div>
+            <div style="color:#fff;display:flex;align-items:center;gap:15px">
+                <span id="workerInfo"></span>
+                <button class="btn btn-danger" id="workerLogout">Выйти</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="panel container" style="margin-top:70px">
+        <h1>Мои задачи</h1>
+
+        <div style="margin-bottom:15px">
+            <button class="btn btn-primary" data-filter="all">Все</button>
+            <button class="btn btn-light" data-filter="not_started">Не начато</button>
+            <button class="btn btn-light" data-filter="in_progress">В работе</button>
+            <button class="btn btn-light" data-filter="done">Выполнено</button>
+        </div>
+
+        <div id="tasksList"></div>
+    </main>
+
+    <!-- Логин -->
+    <div class="modal" id="workerLoginModal">
+        <div class="modal-box" style="max-width:400px">
+            <div class="modal-head">
+                <h2>Вход для мастера</h2>
+            </div>
+            <form class="form" id="workerLoginForm">
+                <input name="login" placeholder="Логин" required>
+                <input name="password" type="password" placeholder="Пароль" required>
+                <button class="btn btn-primary">Войти</button>
+                <p class="muted">smirnov / worker123</p>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/worker.js"></script>
+</body>
+</html>
