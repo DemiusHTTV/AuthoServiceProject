@@ -21,3 +21,10 @@ def health_check():
 @app.get("/")
 def serve_index():
     return {"message": "Тут будет главная страница фронтенда"}
+
+# Пример использования переиспользуемого ядра (core)
+from autoservice_core import Part
+@app.get("/api/example-core")
+def example_core_usage():
+    part = Part(id=99, name="Тестовая деталь из ядра", count=1, price=100.0)
+    return {"status": "ok", "core_part": part.model_dump()}
