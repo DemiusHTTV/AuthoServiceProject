@@ -1,30 +1,44 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="AutoService API", version="1.0.0")
+from app.api import cars, employees, orders, services, users
+from app.database.database import Base, SessionLocal, engine
+from app.seed_from_csv import seed_autoservice_from_csv
 
-# CORS для фронтенда (чтобы Макс потом мог подключить статику)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    with SessionLocal() as db:
+        seed_autoservice_from_csv(db)
+    yield
 
-# Базовый проверочный эндпоинт (Healthcheck)
-@app.get("/api/health")
-def health_check():
-    return {"status": "ok", "message": "AutoService API запущен успешно!"}
 
-# Тестовая заглушка для фронтенда, пока Дима не настроил Docker и статику
-@app.get("/")
-def serve_index():
-    return {"message": "Тут будет главная страница фронтенда"}
+def create_app() -> FastAPI:
+    app = FastAPI(title="AutoServices API", lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-# Пример использования переиспользуемого ядра (core)
-from autoservice_core import Part
-@app.get("/api/example-core")
-def example_core_usage():
-    part = Part(id=99, name="Тестовая деталь из ядра", count=1, price=100.0)
-    return {"status": "ok", "core_part": part.model_dump()}
+    for router in (
+        users.router,
+        cars.router,
+        orders.router,
+        employees.router,
+        services.router,
+    ):
+        app.include_router(router)
+
+    @app.get("/")
+    def read_root():
+        return {"status": "ok", "message": "AutoServices API запущен"}
+
+    return app
+
+
+app = create_app()

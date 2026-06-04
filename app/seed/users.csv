@@ -1,0 +1,6 @@
+fullname,phone,email,password,role,bonus_balance
+Главный администратор,+70000000001,admin@autoservice.local,admin123,admin,0
+Иван Механик,+70000000002,worker@autoservice.local,worker123,worker,0
+Павел Клиент,+70000000010,pavel@example.com,client123,client,3000
+Анна Клиент,+70000000011,anna@example.com,client123,client,3000
+
