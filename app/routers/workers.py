@@ -3,6 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from app.database import get_db
 from app.models import WorkerLogin, StatusUpdate
+from autoservice_core import calculate_bonus
 
 router = APIRouter(prefix="/api/workers", tags=["workers"])
 
@@ -45,16 +46,32 @@ def get_tasks(worker_id: int):
 def update_task_status(assignment_id: int, data: StatusUpdate):
     conn = get_db()
     assignment = conn.execute(
-        "SELECT * FROM request_assignments WHERE id = ?",
+        """SELECT ra.*, r.service_id, s.base_price
+           FROM request_assignments ra
+           JOIN requests r ON ra.request_id = r.id
+           LEFT JOIN services s ON r.service_id = s.id
+           WHERE ra.id = ?""",
         (assignment_id,)).fetchone()
     if not assignment:
         conn.close()
         raise HTTPException(404, "Назначение не найдено")
 
+    bonus_amount = 0.0
+
     if data.status == "done":
         conn.execute(
             "UPDATE request_assignments SET status = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?",
             (data.status, assignment_id))
+
+        if assignment["status"] != "done":
+            order_total = float(assignment["base_price"] or 0)
+            bonus_amount = calculate_bonus(order_total, 1.0)
+            conn.execute(
+                """INSERT OR IGNORE INTO worker_bonuses
+                   (worker_id, request_id, assignment_id, amount)
+                   VALUES (?, ?, ?, ?)""",
+                (assignment["worker_id"], assignment["request_id"], assignment_id, bonus_amount))
+
         # Проверяем все ли задания по заявке выполнены
         request_id = assignment["request_id"]
         pending = conn.execute(
@@ -77,4 +94,4 @@ def update_task_status(assignment_id: int, data: StatusUpdate):
 
     conn.commit()
     conn.close()
-    return {"status": data.status}
+    return {"status": data.status, "bonus": bonus_amount}

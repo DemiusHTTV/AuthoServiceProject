@@ -10,7 +10,7 @@ graph TD
     Nginx -->|JS fetch| Backend[FastAPI Основной Бэкенд :8000]
     
     subgraph "Узел Бэкенда"
-        Backend --> DB_App[(SQLite: app.db)]
+        Backend --> DB_App[(SQLite: autoservice.db)]
         Backend -.->|Импорт| Core[autoservice-core library]
     end
     
@@ -22,5 +22,5 @@ graph TD
 ```
 
 ## Паттерны проектирования
-1. **API Gateway (Частично)**: Роль маршрутизации запросов к сервисам берет на себя клиент (JS), но запросы к складу проксируются через основной Backend.
-2. **Shared Library**: Пакет `autoservice_core` используется для разделения чистой бизнес-логики (расчет стоимости заказов) от транспортного слоя (FastAPI).
+1. **Backend-for-Frontend / Partial Gateway**: клиентский JS ходит в основной backend, а доступ к складу для UI организован через прокси-маршруты `/api/warehouse/*`.
+2. **Shared Library**: пакет `autoservice_core` хранит общие доменные модели, расчёт стоимости деталей и расчёт бонусов сотрудников.

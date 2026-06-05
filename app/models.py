@@ -36,6 +36,7 @@ class OrderCreate(BaseModel):
     description: Optional[str] = None
     service_id: Optional[int] = None
     client_id: Optional[int] = None
+    bonus_to_spend: float = 0
 
 
 class AssignWorker(BaseModel):

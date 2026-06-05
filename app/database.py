@@ -88,6 +88,18 @@ def init_db():
             FOREIGN KEY (client_id) REFERENCES clients(id)
         );
 
+        CREATE TABLE IF NOT EXISTS worker_bonuses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            worker_id INTEGER NOT NULL,
+            request_id INTEGER NOT NULL,
+            assignment_id INTEGER NOT NULL UNIQUE,
+            amount REAL NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (worker_id) REFERENCES workers(id),
+            FOREIGN KEY (request_id) REFERENCES requests(id),
+            FOREIGN KEY (assignment_id) REFERENCES request_assignments(id)
+        );
+
         CREATE TABLE IF NOT EXISTS parts_usage (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             request_id INTEGER NOT NULL,
@@ -96,8 +108,24 @@ def init_db():
             FOREIGN KEY (request_id) REFERENCES requests(id)
         );
     """)
+    _ensure_schema_updates(conn)
     conn.commit()
     conn.close()
+
+
+def _has_column(conn, table_name, column_name):
+    columns = conn.execute(f"PRAGMA table_info({table_name})").fetchall()
+    return any(column["name"] == column_name for column in columns)
+
+
+def _ensure_schema_updates(conn):
+    """Добавить новые столбцы в существующие таблицы без пересоздания БД."""
+    if not _has_column(conn, "requests", "estimated_price"):
+        conn.execute("ALTER TABLE requests ADD COLUMN estimated_price REAL DEFAULT 0")
+    if not _has_column(conn, "requests", "bonus_spent"):
+        conn.execute("ALTER TABLE requests ADD COLUMN bonus_spent REAL DEFAULT 0")
+    if not _has_column(conn, "requests", "final_price"):
+        conn.execute("ALTER TABLE requests ADD COLUMN final_price REAL DEFAULT 0")
 
 
 def _read_csv(filename):
