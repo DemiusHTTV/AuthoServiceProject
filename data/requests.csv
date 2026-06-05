@@ -1,0 +1,16 @@
+id,client_id,client_name,client_email,client_phone,car_brand,car_model,car_year,description,service_id,status,created_at
+1,1,Иванов Алексей,ivanov@mail.ru,+79001234567,Toyota,Camry,2019,Стук при повороте руля,1,accepted,2026-05-20 10:00
+2,2,Петрова Мария,petrova@mail.ru,+79007654321,Hyundai,Solaris,2021,Не заводится двигатель,2,in_progress,2026-05-20 11:30
+3,3,Сидоров Дмитрий,sidorov@mail.ru,+79001112233,Kia,Rio,2020,Плановое ТО,3,completed,2026-05-19 09:00
+4,4,Козлова Анна,kozlova@mail.ru,+79009998877,BMW,X5,2018,Скрип при торможении,4,new,2026-05-21 14:00
+5,5,Новиков Сергей,novikov@mail.ru,+79005556644,Lada,Vesta,2022,Сезонная замена шин,5,completed,2026-05-18 16:00
+6,,Гость Иван,guest@mail.ru,+79001010101,Ford,Focus,2017,Замена масла и фильтра,6,new,2026-05-22 09:30
+7,6,Федорова Елена,fedorova@mail.ru,+79003332211,Volkswagen,Polo,2020,Горит check engine,7,accepted,2026-05-22 10:00
+8,7,Морозов Павел,morozov@mail.ru,+79004445566,Renault,Duster,2019,Не работают фары,8,in_progress,2026-05-21 11:00
+9,,Гость Марина,guest2@mail.ru,+79002020202,Skoda,Octavia,2021,Стук в подвеске,1,new,2026-05-23 08:00
+10,8,Волкова Ольга,volkova@mail.ru,+79006667788,Mazda,CX-5,2022,Замена колодок,4,new,2026-05-23 12:00
+11,9,Соколов Артём,sokolov@mail.ru,+79002223344,Nissan,Qashqai,2018,ТО-60000,3,accepted,2026-05-22 15:00
+12,10,Лебедева Наталья,lebedeva@mail.ru,+79008889900,Honda,Civic,2020,Замена масла,6,completed,2026-05-17 10:00
+13,1,Иванов Алексей,ivanov@mail.ru,+79001234567,Toyota,Camry,2019,Диагностика электрики,8,new,2026-05-24 09:00
+14,,Гость Петр,guest3@mail.ru,+79003030303,Chevrolet,Cruze,2016,Шиномонтаж,5,new,2026-05-24 14:00
+15,11,Кузнецов Иван,kuznecov@mail.ru,+79001010101,Audi,A4,2019,Компьютерная диагностика,7,new,2026-05-25 10:00

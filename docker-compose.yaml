@@ -1,0 +1,36 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - warehouse
+
+  backend:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    environment:
+      WAREHOUSE_URL: http://warehouse:8001
+    ports:
+      - "8000:8000"
+    volumes:
+      - app_data:/app/data
+    depends_on:
+      - warehouse
+
+  warehouse:
+    build:
+      context: .
+      dockerfile: warehouse_service/Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - warehouse_data:/app/data
+
+volumes:
+  app_data:
+  warehouse_data:
