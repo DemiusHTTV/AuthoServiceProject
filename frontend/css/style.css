@@ -382,7 +382,7 @@ footer {
 }
 
 .user-hamburger {
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: space-between;
     width: 26px;
