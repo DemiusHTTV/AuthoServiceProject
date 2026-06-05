@@ -1,34 +1,32 @@
-.PHONY: help setup run run-warehouse run-all test compose-up compose-down clean
+.PHONY: help setup run run-warehouse run-all test up down clean
+
+SCRIPTS_DIR := scripts
 
 help:
-	@echo "Доступные команды:"
-	@echo "  make setup          — установить зависимости"
-	@echo "  make run            — запустить backend (порт 8000)"
-	@echo "  make run-warehouse  — запустить склад (порт 8001)"
-	@echo "  make run-all        — запустить оба сервиса"
-	@echo "  make compose-up     — запуск через Docker Compose"
-	@echo "  make compose-down   — остановить Docker Compose"
-	@echo "  make clean          — удалить БД и кэш"
+	sh $(SCRIPTS_DIR)/help.sh
 
 setup:
-	pip install -r requirements.txt
+	sh $(SCRIPTS_DIR)/setup.sh
 
 run:
-	uvicorn app.main:app --reload --port 8000
+	sh $(SCRIPTS_DIR)/run-app.sh
 
 run-warehouse:
-	uvicorn warehouse_service.main:app --reload --port 8001
+	uv run uvicorn warehouse_service.main:app --host 0.0.0.0 --port 8001 --reload
 
 run-all:
 	@echo "Запуск склада (фон)..."
-	uvicorn warehouse_service.main:app --port 8001 &
+	uv run uvicorn warehouse_service.main:app --host 0.0.0.0 --port 8001 &
 	@echo "Запуск основного сервиса..."
-	uvicorn app.main:app --reload --port 8000
+	sh $(SCRIPTS_DIR)/run-app.sh
 
-compose-up:
+test:
+	sh $(SCRIPTS_DIR)/run-tests.sh
+
+up:
 	docker compose up --build -d
 
-compose-down:
+down:
 	docker compose down -v
 
 clean:
