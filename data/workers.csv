@@ -1,0 +1,8 @@
+id,name,phone,specialization_id,login,password_hash
+1,Смирнов Олег,+79101234567,1,smirnov,worker123
+2,Громов Виктор,+79107654321,2,gromov,worker123
+3,Тихонов Роман,+79101112233,3,tihonov,worker123
+4,Белов Кирилл,+79109998877,4,belov,worker123
+5,Орлов Денис,+79105556644,5,orlov,worker123
+6,Жуков Николай,+79103332211,1,zhukov,worker123
+7,Климов Артём,+79104445566,3,klimov,worker123

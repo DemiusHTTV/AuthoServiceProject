@@ -1,35 +1,36 @@
-SHELL := /bin/sh
-
-SETUP_CMD ?= ./scripts/setup.sh
-APP_CMD ?= ./scripts/run-app.sh
-TEST_CMD ?= ./scripts/run-tests.sh
-COMPOSE_UP_CMD ?= docker compose up --build --wait
-COMPOSE_DOWN_CMD ?= docker compose down -v
-
-.PHONY: help setup run test check compose-up compose-down
+.PHONY: help setup run run-warehouse run-all test compose-up compose-down clean
 
 help:
-	@printf '%s\n' \
-		'setup              Настроить локальное окружение (uv sync)' \
-		'run                Запустить основное приложение локально' \
-		'test               Запустить все тесты' \
-		'compose-up         Поднять все микросервисы в Docker' \
-		'compose-down       Остановить Docker контейнеры' \
-		'check              Прогнать все проверки (тесты)'
+	@echo "Доступные команды:"
+	@echo "  make setup          — установить зависимости"
+	@echo "  make run            — запустить backend (порт 8000)"
+	@echo "  make run-warehouse  — запустить склад (порт 8001)"
+	@echo "  make run-all        — запустить оба сервиса"
+	@echo "  make compose-up     — запуск через Docker Compose"
+	@echo "  make compose-down   — остановить Docker Compose"
+	@echo "  make clean          — удалить БД и кэш"
 
 setup:
-	$(SETUP_CMD)
+	pip install -r requirements.txt
 
 run:
-	$(APP_CMD)
+	uvicorn app.main:app --reload --port 8000
 
-test:
-	$(TEST_CMD)
+run-warehouse:
+	uvicorn warehouse_service.main:app --reload --port 8001
+
+run-all:
+	@echo "Запуск склада (фон)..."
+	uvicorn warehouse_service.main:app --port 8001 &
+	@echo "Запуск основного сервиса..."
+	uvicorn app.main:app --reload --port 8000
 
 compose-up:
-	$(COMPOSE_UP_CMD)
+	docker compose up --build -d
 
 compose-down:
-	$(COMPOSE_DOWN_CMD)
+	docker compose down -v
 
-check: test
+clean:
+	rm -f autoservice.db warehouse.db
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

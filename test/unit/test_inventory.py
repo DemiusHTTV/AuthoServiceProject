@@ -1,4 +1,5 @@
 import pytest
+# pyrefly: ignore [missing-import]
 from autoservice_core import Part, OrderItem, calculate_total_price
 
 def test_calculates_total_for_valid_items():

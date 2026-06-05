@@ -31,3 +31,11 @@ backend/autoservice.sqlite3
 *.sln
 *.sw?
 \.pytest_cache
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Workspaces
+*.code-workspace
