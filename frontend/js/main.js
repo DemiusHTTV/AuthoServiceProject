@@ -3,6 +3,7 @@
  */
 
 const API = '';  // same-origin
+let servicesCache = [];
 
 // ============ Утилиты ============
 function $(sel) { return document.querySelector(sel); }
@@ -41,6 +42,7 @@ function updateUI() {
         $('#orderEmail').readOnly = true;
         $('#orderPhone').value = user.phone || '';
         $('#orderPhone').readOnly = true;
+        refreshBonusPanel();
     } else {
         $('#authBlock').classList.remove('hidden');
         $('#profileBlock').classList.add('hidden');
@@ -53,6 +55,9 @@ function updateUI() {
         $('#orderEmail').readOnly = false;
         $('#orderPhone').value = '';
         $('#orderPhone').readOnly = false;
+        $('#bonusPanel').classList.add('hidden');
+        $('#bonusToSpend').value = '0';
+        $('#bonusRange').value = '0';
     }
 }
 
@@ -61,6 +66,7 @@ async function loadServices() {
     try {
         const resp = await fetch(API + '/api/services');
         const services = await resp.json();
+        servicesCache = services;
 
         // Карточки услуг
         const grid = $('#servicesGrid');
@@ -79,6 +85,43 @@ async function loadServices() {
     } catch (e) {
         console.error('Ошибка загрузки услуг:', e);
     }
+}
+
+function getSelectedService() {
+    const serviceId = parseInt($('#orderServiceSelect').value);
+    if (!serviceId) return null;
+    return servicesCache.find(service => service.id === serviceId) || null;
+}
+
+function refreshBonusPanel() {
+    const user = getUser();
+    const service = getSelectedService();
+    const panel = $('#bonusPanel');
+    const range = $('#bonusRange');
+    const bonusInput = $('#bonusToSpend');
+
+    if (!user || !service) {
+        panel.classList.add('hidden');
+        range.value = '0';
+        range.max = '0';
+        bonusInput.value = '0';
+        $('#bonusSpendLabel').textContent = 'Списывается: 0 ₽';
+        $('#bonusFinalPriceLabel').textContent = 'К оплате: 0 ₽';
+        return;
+    }
+
+    panel.classList.remove('hidden');
+    const maxBonus = Math.max(0, Math.min(
+        Math.floor(Number(user.bonus_balance || 0)),
+        Math.floor(Number(service.base_price || 0))
+    ));
+    const currentValue = Math.min(Number(range.value || 0), maxBonus);
+    range.max = String(maxBonus);
+    range.value = String(currentValue);
+    bonusInput.value = String(currentValue);
+    $('#bonusAvailableLabel').textContent = `Доступно: ${Number(user.bonus_balance || 0)} ₽`;
+    $('#bonusSpendLabel').textContent = `Списывается: ${currentValue} ₽`;
+    $('#bonusFinalPriceLabel').textContent = `К оплате: ${Math.max(Number(service.base_price || 0) - currentValue, 0)} ₽`;
 }
 
 // ============ Модалки ============
@@ -186,6 +229,13 @@ $('#sidebarLogout').addEventListener('click', (e) => {
     clearUser();
 });
 
+$('#orderServiceSelect').addEventListener('change', refreshBonusPanel);
+$('#bonusRange').addEventListener('input', () => {
+    const value = Number($('#bonusRange').value || 0);
+    $('#bonusToSpend').value = String(value);
+    refreshBonusPanel();
+});
+
 // ============ Создание заявки ============
 $('#orderForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -201,7 +251,8 @@ $('#orderForm').addEventListener('submit', async (e) => {
         car_year: fd.get('year') ? parseInt(fd.get('year')) : null,
         service_id: fd.get('service_id') ? parseInt(fd.get('service_id')) : null,
         description: fd.get('description'),
-        client_id: user ? user.id : null
+        client_id: user ? user.id : null,
+        bonus_to_spend: fd.get('bonus_to_spend') ? parseFloat(fd.get('bonus_to_spend')) : 0
     };
 
     try {
@@ -211,17 +262,23 @@ $('#orderForm').addEventListener('submit', async (e) => {
             body: JSON.stringify(body)
         });
         if (!resp.ok) {
-            alert('Ошибка отправки заявки');
+            const err = await resp.json();
+            alert(err.detail || 'Ошибка отправки заявки');
             return;
         }
+        const result = await resp.json();
         closeModal('orderModal');
         e.target.reset();
         if (user) {
+            if (typeof result.bonus_balance === 'number') {
+                setUser({ ...user, bonus_balance: result.bonus_balance });
+            }
             $('#orderName').value = user.name;
             $('#orderEmail').value = user.email;
             $('#orderPhone').value = user.phone || '';
         }
-        alert('Заявка отправлена! ✅');
+        refreshBonusPanel();
+        alert(`Заявка отправлена! К оплате: ${result.final_price} ₽ ✅`);
     } catch (err) {
         alert('Ошибка сети');
     }
@@ -285,7 +342,7 @@ $('#navMyBonuses').addEventListener('click', async (e) => {
             <h4 style="color:#fff;margin-bottom:10px">История начислений</h4>
             ${data.bonuses.map(b => `
                 <div style="background:#2a2a34;padding:10px;border-radius:6px;margin-bottom:8px">
-                    <div style="color:#4caf50;font-weight:bold">+${b.amount} ₽</div>
+                    <div style="color:${b.amount < 0 ? '#ff6b6b' : '#4caf50'};font-weight:bold">${b.amount > 0 ? '+' : ''}${b.amount} ₽</div>
                     <div style="font-size:0.85rem">${b.reason}</div>
                     <div style="font-size:0.75rem;color:#777">${b.created_at}</div>
                 </div>

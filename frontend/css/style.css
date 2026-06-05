@@ -1225,6 +1225,27 @@ body {
     outline: none;
     border-color: #ff4d4d;
 }
+.bonus-panel {
+    background: #f8f8fb;
+    border: 1px solid #e6e6ef;
+    border-radius: 8px;
+    padding: 14px;
+    display: grid;
+    gap: 10px;
+}
+.bonus-panel-head,
+.bonus-panel-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.bonus-panel input[type="range"] {
+    width: 100%;
+    accent-color: #ff4d4d;
+    padding: 0;
+}
 .tabs {
     display: flex;
     margin-bottom: 25px;

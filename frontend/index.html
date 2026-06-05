@@ -265,6 +265,19 @@
                 <select name="service_id" id="orderServiceSelect" required>
                     <option value="">Выберите услугу</option>
                 </select>
+                <div class="bonus-panel hidden" id="bonusPanel">
+                    <div class="bonus-panel-head">
+                        <strong>Списать бонусы</strong>
+                        <span id="bonusAvailableLabel">Доступно: 0 ₽</span>
+                    </div>
+                    <input type="range" id="bonusRange" min="0" max="0" step="100" value="0">
+                    <div class="bonus-panel-meta">
+                        <span id="bonusSpendLabel">Списывается: 0 ₽</span>
+                        <span id="bonusFinalPriceLabel">К оплате: 0 ₽</span>
+                    </div>
+                    <input type="hidden" name="bonus_to_spend" id="bonusToSpend" value="0">
+                    <small class="muted">Бонусами можно оплатить до 100% базовой стоимости выбранной услуги.</small>
+                </div>
                 <textarea name="description" placeholder="Комментарий"></textarea>
                 <button class="btn btn-primary">Отправить заявку</button>
             </form>
