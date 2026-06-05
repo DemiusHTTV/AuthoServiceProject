@@ -1,16 +1,21 @@
-
 from fastapi.testclient import TestClient
+
 from app.main import app
+
 
 client = TestClient(app)
 
-def test_health_endpoint():
-    """Smoke-тест: проверяем, что наш healthcheck эндпоинт доступен и отдает 'ok'"""
-    response = client.get("/api/health")
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok", "message": "AutoService API запущен успешно!"}
 
-def test_root_endpoint():
-    """Smoke-тест: проверяем доступность корня"""
+def test_root_endpoint_serves_html():
     response = client.get("/")
     assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+
+
+def test_services_endpoint_returns_seeded_data():
+    response = client.get("/api/services")
+    assert response.status_code == 200
+    payload = response.json()
+    assert isinstance(payload, list)
+    assert len(payload) > 0
+    assert {"id", "name", "base_price"}.issubset(payload[0].keys())
